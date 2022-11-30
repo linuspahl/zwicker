@@ -1,10 +1,6 @@
 import styled from "styled-components";
 import { H2, Icon } from "../common";
 
-const List = styled.ul`
-
-`
-
 const  ListItem = styled.li`
   display: flex;
   align-items: center;

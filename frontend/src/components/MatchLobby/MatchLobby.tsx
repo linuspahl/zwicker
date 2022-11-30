@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import { H1, H2, PageContainer } from "../common"
+import { H1, PageContainer } from "../common"
 import Participants from './Participants'
 import Settings from './Settings'
-import { useLocation } from 'react-router-dom'
 import { Match } from "../../types/types";
 
 const participants = [
