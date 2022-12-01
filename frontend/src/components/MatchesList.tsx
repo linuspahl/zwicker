@@ -63,7 +63,7 @@ const MatchesListItem = ({ match: { title, hasPassword, id } }: { match: Match }
       </MatchTitle>
       <ItemActions>
         {hasPassword && <Icon name="lock"/>}
-        <Button size="small" onClick={joinMatch}>Beitreten</Button>
+        <Button size="small" onClick={joinMatch}>Mitmachen</Button>
       </ItemActions>
     </ItemContainer>
   )

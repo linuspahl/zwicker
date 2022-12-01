@@ -32,14 +32,14 @@ const MatchCreate = () => {
 
   return (
     <PageContainer>
-      <H1>Erstelle eine Partie</H1>
+      <H1>Erstelle ein neues Spiel</H1>
       <Formik<MatchFormValues> onSubmit={createMatch} initialValues={{ title: '', description: '', password: '' }}>
         <Form>
           <FormikFormGroup name="title" label="Title"/>
-          <FormikFormGroup name="password" label="Passwort" help="Optional kannst du den Zugang zur Partie mit einem Passwort schützen."/>
+          <FormikFormGroup name="password" label="Passwort" help="Optional kannst du den Zugang zum Spiel mit einem Passwort schützen."/>
 
           <FormActions>
-            <Button type="submit">Erstellen & zur Lobby</Button>
+            <Button type="submit">Weiter</Button>
           </FormActions>
         </Form>
       </Formik>

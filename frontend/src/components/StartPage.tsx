@@ -36,7 +36,7 @@ const CreateNew = () => {
   
   return (
     <ButtonGroup>
-      <Button onClick={() => navigate("matches/create")}>...oder neue Partie erstellen</Button>
+      <Button onClick={() => navigate("matches/create")}>...oder neues Spiel erstellen</Button>
     </ButtonGroup>
   )
 }
@@ -46,12 +46,8 @@ const StartPage = () => {
     <PageContainer>
       <H1>Zwicker</H1>
       <Section>
-        <H2>Offene Partien</H2>
+        <H2>Bald startende Spiele</H2>
         <MatchesList matches={EXAMPLE_MATCHES} />
-      </Section>
-      <Section>
-        <H2>Laufende Partien</H2>
-        <MatchesList matches={[]} />
       </Section>
       <CreateNew />
     </PageContainer>
