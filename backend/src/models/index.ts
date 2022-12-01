@@ -25,28 +25,25 @@ const sequelize = new Sequelize(
   }
 );
 
-const user = userModel(sequelize, Sequelize);
-const role = roleModel(sequelize, Sequelize);
+const db = {
+  Sequelize,
+  sequelize,
+  user: userModel(sequelize, Sequelize),
+  role: roleModel(sequelize, Sequelize),
+  ROLES: ["user", "admin"],
+};
 
-
-role.belongsToMany(user, {
+db.role.belongsToMany(db.user, {
   through: "user_roles",
   foreignKey: "roleId",
   otherKey: "userId"
 });
 
-user.belongsToMany(role, {
+db.user.belongsToMany(db.role, {
   through: "user_roles",
   foreignKey: "userId",
   otherKey: "roleId"
 });
 
-const db = {
-  Sequelize,
-  sequelize,
-  ROLES: ["user", "admin"],
-  user,
-  role
-};
 
 export default db;

@@ -13,9 +13,9 @@ const authRoute = (app) => {
     "/api/auth/signup",
     [
       verifySignUp.checkDuplicateUsername,
-      verifySignUp.checkRolesExisted
+      verifySignUp.checkRolesExisted,
+      controller.signup
     ],
-    controller.signup
   );
   app.post("/api/auth/signin", controller.signin);
 };

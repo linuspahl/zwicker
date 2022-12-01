@@ -18,31 +18,34 @@ app.get("/", (req, res) => {
 import authRoute from './routes/auth';
 import userRoute from './routes/user';
 
+const DEFAULT_PORT = 8080;
+
 // register routes
 authRoute(app);
 userRoute(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || DEFAULT_PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-
 const Role = database.role;
-database.sequelize.sync({force: true}).then(() => {
-  console.log('Drop and Resync Db');
-  initial();
-});
 
-function initial() {
-  Role.create({
-    id: 1,
-    name: "user"
-  });
- 
-  Role.create({
-    id: 2,
-    name: "admin"
+if (process.env.CLEAR_DB === '1') {
+  const initial = () => {
+    Role.create({
+      id: 1,
+      name: "user"
+    });
+  
+    Role.create({
+      id: 2,
+      name: "admin"
+    });
+  }
+  database.sequelize.sync({force: true}).then(() => {
+    console.log('Drop and Resync Db');
+    initial();
   });
 }
