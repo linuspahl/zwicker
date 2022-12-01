@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --watch './**/*.ts' --exec 'ts-node --transpile-only' index.ts"
+    "start": "nodemon --watch './**/*.ts' --exec 'ts-node --transpile-only' index.ts",
+    "start:clean": "CLEAR_DB=1 yarn start"
   },
   "dependencies": {
     "@types/cors": "^2.8.12",
