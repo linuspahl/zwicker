@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 
-import { Button, FormikFormGroup } from '../components/common';
+import { Button, FormikFormGroup } from './common';
 
 const FormActions = styled.div`
   display: flex;

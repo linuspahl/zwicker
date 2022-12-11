@@ -29,23 +29,26 @@ const ItemActions = styled.div`
   }
 `;
 
-const _joinMatch = (matchId: string, password: string | undefined) => Promise.resolve({ data: { id: matchId, success: true } });
+const joinMatch = (matchId: string) => (
+  Promise.resolve({ data: { id: matchId, success: true } })
+);
 
 function MatchesListItem({ match: { title, hasPassword, id } }: { match: Match }) {
   const navigate = useNavigate();
 
-  const joinMatch = () => {
+  const onJoinMatch = () => {
     let matchPassword;
 
     if (hasPassword) {
+      // eslint-disable-next-line no-alert
       matchPassword = window.prompt(`Bitte gebe das Passwort für die Partie "${title}" ein.`);
 
       if (!matchPassword) {
-        return;
+        return Promise.resolve();
       }
     }
 
-    return _joinMatch(id, matchPassword).then(({ data: { success } }) => {
+    return joinMatch(id).then(({ data: { success } }) => {
       if (success) {
         navigate(`/matches/lobby/${id}`);
       } else {
@@ -60,7 +63,7 @@ function MatchesListItem({ match: { title, hasPassword, id } }: { match: Match }
       </MatchTitle>
       <ItemActions>
         {hasPassword && <Icon name="lock" />}
-        <Button size="small" onClick={joinMatch}>Mitmachen</Button>
+        <Button size="small" onClick={onJoinMatch}>Mitmachen</Button>
       </ItemActions>
     </ItemContainer>
   );

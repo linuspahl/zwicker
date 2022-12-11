@@ -1,7 +1,7 @@
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { create as createMatch } from '../actions/matches';
+import { create as createMatchAction } from '../actions/matches';
 import {
   Button, FormikFormGroup, H1, PageContainer,
 } from './common';
@@ -20,8 +20,11 @@ const FormActions = styled.div`
 function MatchCreate({ currentUserId }: { currentUserId: string }) {
   const navigate = useNavigate();
 
-  const _createMatch = ({ title, password }: MatchFormValues) => createMatch(Number(currentUserId), title, password).then((response) => {
-    console.log({ response });
+  const createMatch = ({ title, password }: MatchFormValues) => createMatchAction(
+    Number(currentUserId),
+    title,
+    password,
+  ).then((response) => {
     const matchId = response.data.match.id;
     navigate(`/matches/lobby/${matchId}`);
   });
@@ -29,7 +32,7 @@ function MatchCreate({ currentUserId }: { currentUserId: string }) {
   return (
     <PageContainer>
       <H1>Erstelle ein neues Spiel</H1>
-      <Formik<MatchFormValues> onSubmit={_createMatch} initialValues={{ title: '', password: '' }}>
+      <Formik<MatchFormValues> onSubmit={createMatch} initialValues={{ title: '', password: '' }}>
         <Form>
           <FormikFormGroup name="title" label="Title" />
           <FormikFormGroup name="password" label="Passwort" help="Optional kannst du den Zugang zum Spiel mit einem Passwort schützen." />

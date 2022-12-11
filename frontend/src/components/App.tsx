@@ -1,21 +1,21 @@
+import { useCallback, useState } from 'react';
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import styled, { createGlobalStyle } from 'styled-components';
 import GlobalFonts from '../fonts';
 
 import Login from './Login';
 import './App.css';
 import { getCurrent, signin } from '../actions/users';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from 'react-router-dom';
 
 import MatchCreate from './MatchCreate';
 import MatchLobby from './MatchLobby';
 
-import styled, { createGlobalStyle } from 'styled-components';
-import { useCallback, useState } from 'react';
 import StartPage from './StartPage';
-import { useQuery } from '@tanstack/react-query';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -66,19 +66,24 @@ function App() {
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem('access-token'));
   const { data: user, isFetching } = useCurrentUser(accessToken);
 
-  const handleLogin = useCallback(({ username, password }: { username?: string, password?: string }) => {
-    if (username && password) {
-      return signin(username, password).then(({
-        data: {
-          accessToken, id, roles, username,
-        },
-      }) => {
-        if (accessToken) {
-          localStorage.setItem('access-token', accessToken);
-          setAccessToken(accessToken);
-        }
-      });
+  const handleLogin = useCallback(({
+    username, password,
+  }: {
+    username?: string,
+    password?: string
+  }) => {
+    if (!username || !password) {
+      throw Error('Password or username missing');
     }
+
+    return signin(username, password).then(({
+      data,
+    }) => {
+      if (data.accessToken) {
+        localStorage.setItem('access-token', data.accessToken);
+        setAccessToken(data.accessToken);
+      }
+    });
   }, []);
 
   return (
@@ -87,25 +92,20 @@ function App() {
       <GlobalStyle />
       <Container>
         <PageLayout>
-          {!isFetching && (
-          <>
-            {user
-              ? (
-                <Router>
-                  <Routes>
-                    <Route path="/" element={<StartPage />} />
-                    <Route path="/matches/create" element={<MatchCreate currentUserId={user.id} />} />
-                    <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
-                  </Routes>
-                </Router>
-              )
-              : (
-                <Login onSubmit={handleLogin} />
-              )}
-          </>
+          {(!isFetching && user) && (
+            <Router>
+              <Routes>
+                <Route path="/" element={<StartPage />} />
+                <Route path="/matches/create" element={<MatchCreate currentUserId={user.id} />} />
+                <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
+              </Routes>
+            </Router>
+          )}
+
+          {(!!isFetching && !user) && (
+            <Login onSubmit={handleLogin} />
           )}
         </PageLayout>
-
       </Container>
     </>
   );

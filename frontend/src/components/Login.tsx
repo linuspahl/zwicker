@@ -1,15 +1,17 @@
 import LoginForm from './LoginForm';
-import { PageContainer, H1 } from '../components/common';
+import { H1, PageContainer } from './common';
 
-function Login({ onSubmit }: { onSubmit: (values: { username?: string, password?: string }) => void }) {
-  return (
-    <PageContainer>
-      <H1>
-        Zwicker
-      </H1>
-      <LoginForm onSubmit={onSubmit} />
-    </PageContainer>
-  );
+type Props = {
+  onSubmit: (values: { username?: string, password?: string }) => void
 }
+
+const Login = ({ onSubmit }: Props) => (
+  <PageContainer>
+    <H1>
+      Zwicker
+    </H1>
+    <LoginForm onSubmit={onSubmit} />
+  </PageContainer>
+);
 
 export default Login;

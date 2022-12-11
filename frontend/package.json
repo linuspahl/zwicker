@@ -60,6 +60,7 @@
           ]
         }
       ],
+      "react/function-component-definition": "off",
       "import/extensions": [
         "error",
         "ignorePackages",

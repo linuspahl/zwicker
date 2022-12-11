@@ -1,6 +1,6 @@
 import backendApi from '../backendApi';
 import { fromJSON } from '../models/Match';
-import { Match, MatchJSON } from '../types/types';
+import type { Match, MatchJSON } from '../types/types';
 
 export const create = (curentUserId: number, title: string, password: string | undefined) => {
   const accessToken = localStorage.getItem('access-token');

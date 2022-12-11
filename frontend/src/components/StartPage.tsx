@@ -1,27 +1,14 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { Match } from '../types/types';
+
 import { Button, PageContainer } from './common';
 import H1 from './common/H1';
 import H2 from './common/H2';
 import MatchesList from './MatchesList';
-import { getAll } from '../actions/matches';
-import { Match } from '../types/types';
 
-const EXAMPLE_MATCHES = [
-  {
-    id: 'match-1',
-    title: 'Just for fun!',
-    hasPassword: true,
-    hostUserId: 1,
-  },
-  {
-    id: 'match-2',
-    title: 'Kaffeeklatsch',
-    hasPassword: false,
-    hostUserId: 2,
-  },
-];
+import { getAll } from '../actions/matches';
 
 const Section = styled.div`
   margin-bottom: 24px;
@@ -39,7 +26,9 @@ function CreateNew() {
 
   return (
     <ButtonGroup>
-      <Button onClick={() => navigate('matches/create')}>...oder neues Spiel erstellen</Button>
+      <Button onClick={() => navigate('matches/create')}>
+        ...oder neues Spiel erstellen
+      </Button>
     </ButtonGroup>
   );
 }
