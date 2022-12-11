@@ -19,7 +19,6 @@ import authRoute from './routes/auth';
 import userRoutes from './routes/user';
 import matchRoutes from './routes/match';
 
-
 const DEFAULT_PORT = 8080;
 
 // register routes

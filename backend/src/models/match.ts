@@ -5,8 +5,12 @@ const userModel = (sequelize, Sequelize) => sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false
     },
+    title: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     password: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     status: {
       type: Sequelize.ENUM('lobby', 'running', 'ended')

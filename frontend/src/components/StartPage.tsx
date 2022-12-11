@@ -4,6 +4,9 @@ import H1 from "./common/H1"
 import H2 from "./common/H2"
 import MatchesList from './MatchesList'
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query"
+import { getAll } from "../actions/matches"
+import { Match } from "../types/types"
 
 const EXAMPLE_MATCHES = [
   {
@@ -41,13 +44,21 @@ const CreateNew = () => {
   )
 }
 
+const useMatches = (): { data: Array<Match> | undefined, isFetching: boolean } => {
+  const { data, isFetching } = useQuery({ queryKey: ["matches"], queryFn: () => getAll() })
+  return { data, isFetching };
+}
+
 const StartPage = () => {
+  const { data: matches } = useMatches();
+
   return (
     <PageContainer>
       <H1>Zwicker</H1>
       <Section>
         <H2>Bald startende Spiele</H2>
-        <MatchesList matches={EXAMPLE_MATCHES} />
+        {!!matches?.length && <MatchesList matches={matches} />}
+        {/* TODO: Display loading spinner & No result info */}
       </Section>
       <CreateNew />
     </PageContainer>

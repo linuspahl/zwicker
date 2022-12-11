@@ -16,6 +16,13 @@ const matchRoutes = (app) => {
       controller.create
     ],
   );
+  app.get(
+    "/api/matches",
+    [
+      authJwt.verifyToken,
+      controller.getAll
+    ],
+  );
 };
 
 export default matchRoutes
