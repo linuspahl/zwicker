@@ -59,13 +59,17 @@ const Container = styled.div`
 
 function App() {
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem('access-token'));
+  const [currentUser, setCurrentUser] = useState<{ id: string, roles: Array<string>, username: string } | undefined>();
 
   const handleLogin = useCallback(({ username, password }: { username?: string, password?: string }) => {
     if (username && password) {
-      return signin(username, password).then(({ data: { accessToken }}) => {
+      return signin(username, password).then(({ data: {accessToken, id, roles, username} }) => {
         if (accessToken) {
           localStorage.setItem('access-token', accessToken)
           setAccessToken(accessToken);
+          setCurrentUser({
+            id, roles, username
+          })
         }
       });
     }
@@ -77,12 +81,12 @@ function App() {
       <GlobalStyle />
       <Container>
         <PageLayout>
-          {!!accessToken ?
+          {(!!accessToken && currentUser) ?
             <>
               <Router>
                 <Routes>
                   <Route path="/" element={<StartPage />} />
-                  <Route path="/matches/create" element={<MatchCreate />}/>
+                  <Route path="/matches/create" element={<MatchCreate currentUserId={currentUser.id} />}/>
                   <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
                 </Routes>
               </Router>

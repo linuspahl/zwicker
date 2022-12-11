@@ -16,13 +16,16 @@ app.get("/", (req, res) => {
 });
 
 import authRoute from './routes/auth';
-import userRoute from './routes/user';
+import userRoutes from './routes/user';
+import matchRoutes from './routes/match';
+
 
 const DEFAULT_PORT = 8080;
 
 // register routes
 authRoute(app);
-userRoute(app);
+userRoutes(app);
+matchRoutes(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || DEFAULT_PORT;
@@ -44,7 +47,7 @@ if (process.env.CLEAR_DB === '1') {
       name: "admin"
     });
   }
-  database.sequelize.sync({force: true}).then(() => {
+  database.sequelize.sync({ force: true }).then(() => {
     console.log('Drop and Resync Db');
     initial();
   });

@@ -3,7 +3,7 @@ import {Sequelize} from "sequelize";
 import createDbConfig from "../config/db";
 import userModel from "./user";
 import roleModel from "./role";
-
+import matchModel from "./match";
 
 const {
   name: dbName,
@@ -30,6 +30,7 @@ const db = {
   sequelize,
   user: userModel(sequelize, Sequelize),
   role: roleModel(sequelize, Sequelize),
+  match: matchModel(sequelize, Sequelize),
   ROLES: ["user", "admin"],
 };
 
@@ -43,6 +44,10 @@ db.user.belongsToMany(db.role, {
   through: "user_roles",
   foreignKey: "userId",
   otherKey: "roleId"
+});
+
+db.match.hasOne(db.user, {
+  targetKey: "host_user_id",
 });
 
 

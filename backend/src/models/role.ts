@@ -1,5 +1,6 @@
 const RoleModel = (sequelize, Sequelize) => sequelize.define(
-  "roles", {
+  "roles",
+  {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true

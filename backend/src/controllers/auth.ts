@@ -7,17 +7,17 @@ const User = db.user;
 const Role = db.role;
 const Op = db.Sequelize.Op;
 
-const signup = (req, res) => {
+const signup = ({body: { username, password, roles }}, res) => {
   User.create({
-    username: req.body.username,
-    password: bcrypt.hashSync(req.body.password, 8)
+    username,
+    password: bcrypt.hashSync(password, 8)
   })
-  .then(user => {
-    if (req.body.roles) {
+  .then((user) => {
+    if (roles) {
       Role.findAll({
         where: {
           name: {
-            [Op.or]: req.body.roles
+            [Op.or]: roles
           }
         }
       }).then(roles => {
@@ -26,7 +26,6 @@ const signup = (req, res) => {
         });
       });
     } else {
-      // user role = 1
       user.setRoles([1]).then(() => {
         res.send({ message: "User was registered successfully!" });
       });
@@ -37,18 +36,13 @@ const signup = (req, res) => {
   });
 };
 
-const signin = (req, res) => {
-  User.findOne({
-    where: {
-      username: req.body.username
-    }
-  })
-  .then(user => {
+const signin = ({ body: { username, password }}, res) => {
+  User.findOne({ where: { username } }).then(user => {
     if (!user) {
       return res.status(404).send({ message: "User Not found." });
     }
     var passwordIsValid = bcrypt.compareSync(
-      req.body.password,
+      password,
       user.password
     );
     if (!passwordIsValid) {
@@ -72,8 +66,7 @@ const signin = (req, res) => {
         accessToken: token
       });
     });
-  })
-  .catch(err => {
+  }).catch(err => {
     res.status(500).send({ message: err.message });
   });
 };

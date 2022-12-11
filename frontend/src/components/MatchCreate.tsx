@@ -1,12 +1,12 @@
 import { Button, FormikFormGroup, H1, PageContainer } from "./common"
 import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
+import { create as createMatch } from '../actions/matches'
 import styled from "styled-components";
 
 type MatchFormValues = {
   title: string,
-  description?: string,
-  password?: string,
+  password: string | undefined,
 }
 
 const FormActions = styled.div`
@@ -15,25 +15,21 @@ const FormActions = styled.div`
   margin-top: 18px;
 `
 
-const _createMatch = () => {
-  return Promise.resolve({ data: { id: 'new-match-id' }})
-}
-
-const MatchCreate = () => {
+const MatchCreate = ({ currentUserId }: { currentUserId: string }) => {
   const navigate = useNavigate();
 
-  const createMatch = (values: MatchFormValues) => {
-    _createMatch().then(({ data: { id } }) => {
-      navigate(`/matches/lobby/${id}`);
-    }).catch((error) => {
-      console.error(error); // TODO: display user notification
-    })
+  const _createMatch = ({ title, password }: MatchFormValues) => {
+    return createMatch(Number(currentUserId), title, password).then((response) => {
+      console.log({response})
+      const matchId = response.data.match.id
+      navigate(`/matches/lobby/${matchId}`);
+    });
   };
 
   return (
     <PageContainer>
       <H1>Erstelle ein neues Spiel</H1>
-      <Formik<MatchFormValues> onSubmit={createMatch} initialValues={{ title: '', description: '', password: '' }}>
+      <Formik<MatchFormValues> onSubmit={_createMatch} initialValues={{ title: '', password: '' }}>
         <Form>
           <FormikFormGroup name="title" label="Title"/>
           <FormikFormGroup name="password" label="Passwort" help="Optional kannst du den Zugang zum Spiel mit einem Passwort schützen."/>
