@@ -1,9 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 
 import BadScriptFont from './BadScript-Regular.ttf';
-import TavirajFont from  './Taviraj-ExtraLight.ttf';
-import MuktaVaaniFont from  './MuktaVaani-Regular.ttf';
-
+import TavirajFont from './Taviraj-ExtraLight.ttf';
+import MuktaVaaniFont from './MuktaVaani-Regular.ttf';
 
 export default createGlobalStyle`
   @font-face {

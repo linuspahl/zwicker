@@ -21,4 +21,3 @@ export type MatchJSON = {
   has_password: boolean,
   host_user_id: number,
 }
-

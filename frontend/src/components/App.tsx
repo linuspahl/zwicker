@@ -1,19 +1,18 @@
 import GlobalFonts from '../fonts';
 
-import Login from './Login'
+import Login from './Login';
 import './App.css';
 import { getCurrent, signin } from '../actions/users';
 import {
   BrowserRouter as Router,
   Routes,
-  Route
-} from "react-router-dom";
+  Route,
+} from 'react-router-dom';
 
 import MatchCreate from './MatchCreate';
 import MatchLobby from './MatchLobby';
 
-
-import styled,  { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components';
 import { useCallback, useState } from 'react';
 import StartPage from './StartPage';
 import { useQuery } from '@tanstack/react-query';
@@ -43,7 +42,7 @@ const GlobalStyle = createGlobalStyle`
   li {
     list-style: none;
   }
-`
+`;
 
 const PageLayout = styled.div`
   display: flex;
@@ -59,47 +58,52 @@ const Container = styled.div`
 `;
 
 const useCurrentUser = (accessToken: string | null) => {
-  const { data, isFetching } = useQuery({ queryKey: ["session", accessToken], queryFn: () => getCurrent(), enabled: !!accessToken })
+  const { data, isFetching } = useQuery({ queryKey: ['session', accessToken], queryFn: () => getCurrent(), enabled: !!accessToken });
   return { data, isFetching };
-}
+};
 
 function App() {
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem('access-token'));
-  const { data: user, isFetching} = useCurrentUser(accessToken)
-
+  const { data: user, isFetching } = useCurrentUser(accessToken);
 
   const handleLogin = useCallback(({ username, password }: { username?: string, password?: string }) => {
     if (username && password) {
-      return signin(username, password).then(({ data: {accessToken, id, roles, username} }) => {
+      return signin(username, password).then(({
+        data: {
+          accessToken, id, roles, username,
+        },
+      }) => {
         if (accessToken) {
-          localStorage.setItem('access-token', accessToken)
+          localStorage.setItem('access-token', accessToken);
           setAccessToken(accessToken);
         }
       });
     }
-  }, [])
+  }, []);
 
   return (
     <>
-      <GlobalFonts/>
+      <GlobalFonts />
       <GlobalStyle />
       <Container>
         <PageLayout>
-          {!isFetching && <>
-            {user ?
-              <>
+          {!isFetching && (
+          <>
+            {user
+              ? (
                 <Router>
                   <Routes>
                     <Route path="/" element={<StartPage />} />
-                    <Route path="/matches/create" element={<MatchCreate currentUserId={user.id} />}/>
+                    <Route path="/matches/create" element={<MatchCreate currentUserId={user.id} />} />
                     <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
                   </Routes>
                 </Router>
-              </>
-            : (
-              <Login onSubmit={handleLogin} />
-            )}
-          </>}
+              )
+              : (
+                <Login onSubmit={handleLogin} />
+              )}
+          </>
+          )}
         </PageLayout>
 
       </Container>

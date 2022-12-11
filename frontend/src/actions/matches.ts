@@ -1,10 +1,9 @@
-import backendApi from '../backendApi'
+import backendApi from '../backendApi';
 import { fromJSON } from '../models/Match';
 import { Match, MatchJSON } from '../types/types';
 
-
 export const create = (curentUserId: number, title: string, password: string | undefined) => {
-  const accessToken = localStorage.getItem('access-token')
+  const accessToken = localStorage.getItem('access-token');
 
   if (!accessToken) {
     throw Error('missing access token');
@@ -14,12 +13,12 @@ export const create = (curentUserId: number, title: string, password: string | u
     headers: {
       'Content-Type': 'application/json',
       'x-access-token': accessToken,
-    }
+    },
   });
-}
+};
 
 export const getAll = async (): Promise<Array<Match>> => {
-  const accessToken = localStorage.getItem('access-token')
+  const accessToken = localStorage.getItem('access-token');
 
   if (!accessToken) {
     throw Error('missing access token');
@@ -29,12 +28,12 @@ export const getAll = async (): Promise<Array<Match>> => {
     headers: {
       'Content-Type': 'application/json',
       'x-access-token': accessToken,
-    }
+    },
   }).then(({ data }) => data.map(fromJSON));
-}
+};
 
 export const getOne = async (matchId: string): Promise<Match> => {
-  const accessToken = localStorage.getItem('access-token')
+  const accessToken = localStorage.getItem('access-token');
 
   if (!accessToken) {
     throw Error('missing access token');
@@ -44,6 +43,6 @@ export const getOne = async (matchId: string): Promise<Match> => {
     headers: {
       'Content-Type': 'application/json',
       'x-access-token': accessToken,
-    }
+    },
   }).then(({ data }) => fromJSON(data));
-}
+};

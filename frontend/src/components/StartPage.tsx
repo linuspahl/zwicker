@@ -1,12 +1,12 @@
-import styled from "styled-components"
-import { Button, PageContainer } from "./common"
-import H1 from "./common/H1"
-import H2 from "./common/H2"
-import MatchesList from './MatchesList'
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query"
-import { getAll } from "../actions/matches"
-import { Match } from "../types/types"
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { Button, PageContainer } from './common';
+import H1 from './common/H1';
+import H2 from './common/H2';
+import MatchesList from './MatchesList';
+import { getAll } from '../actions/matches';
+import { Match } from '../types/types';
 
 const EXAMPLE_MATCHES = [
   {
@@ -20,36 +20,36 @@ const EXAMPLE_MATCHES = [
     title: 'Kaffeeklatsch',
     hasPassword: false,
     hostUserId: 2,
-  }
-]
+  },
+];
 
 const Section = styled.div`
   margin-bottom: 24px;
-`
+`;
 
 const ButtonGroup = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 27px;
   align-items: center;
-`
+`;
 
-const CreateNew = () => {
+function CreateNew() {
   const navigate = useNavigate();
-  
+
   return (
     <ButtonGroup>
-      <Button onClick={() => navigate("matches/create")}>...oder neues Spiel erstellen</Button>
+      <Button onClick={() => navigate('matches/create')}>...oder neues Spiel erstellen</Button>
     </ButtonGroup>
-  )
+  );
 }
 
 const useMatches = (): { data: Array<Match> | undefined, isFetching: boolean } => {
-  const { data, isFetching } = useQuery({ queryKey: ["matches"], queryFn: () => getAll() })
+  const { data, isFetching } = useQuery({ queryKey: ['matches'], queryFn: () => getAll() });
   return { data, isFetching };
-}
+};
 
-const StartPage = () => {
+function StartPage() {
   const { data: matches } = useMatches();
 
   return (
@@ -62,7 +62,7 @@ const StartPage = () => {
       </Section>
       <CreateNew />
     </PageContainer>
-  )
+  );
 }
 
-export default StartPage
+export default StartPage;
