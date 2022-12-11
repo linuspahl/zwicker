@@ -20,6 +20,11 @@ const userRoutes = (app) => {
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );
+  app.get(
+    "/api/session/current",
+    [authJwt.verifyToken],
+    controller.getCurrent
+  );
 };
 
 export default userRoutes

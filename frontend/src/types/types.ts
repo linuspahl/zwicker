@@ -1,3 +1,13 @@
+export type User = {
+  id: string,
+  username: string,
+}
+
+export type UserJSON = {
+  id: string,
+  username: string,
+}
+
 export type Match = {
   title: string,
   id: string,

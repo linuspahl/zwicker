@@ -2,7 +2,7 @@ import GlobalFonts from '../fonts';
 
 import Login from './Login'
 import './App.css';
-import { signin } from '../actions/users';
+import { getCurrent, signin } from '../actions/users';
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,6 +16,7 @@ import MatchLobby from './MatchLobby';
 import styled,  { createGlobalStyle } from 'styled-components'
 import { useCallback, useState } from 'react';
 import StartPage from './StartPage';
+import { useQuery } from '@tanstack/react-query';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -57,9 +58,15 @@ const Container = styled.div`
   background-image: linear-gradient(to right bottom, #0963af, #0860a9, #075ca4, #06599e, #055699);
 `;
 
+const useCurrentUser = (accessToken: string | null) => {
+  const { data, isFetching } = useQuery({ queryKey: ["session", accessToken], queryFn: () => getCurrent(), enabled: !!accessToken })
+  return { data, isFetching };
+}
+
 function App() {
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem('access-token'));
-  const [currentUser, setCurrentUser] = useState<{ id: string, roles: Array<string>, username: string } | undefined>();
+  const { data: user, isFetching} = useCurrentUser(accessToken)
+
 
   const handleLogin = useCallback(({ username, password }: { username?: string, password?: string }) => {
     if (username && password) {
@@ -67,9 +74,6 @@ function App() {
         if (accessToken) {
           localStorage.setItem('access-token', accessToken)
           setAccessToken(accessToken);
-          setCurrentUser({
-            id, roles, username
-          })
         }
       });
     }
@@ -81,19 +85,21 @@ function App() {
       <GlobalStyle />
       <Container>
         <PageLayout>
-          {(!!accessToken && currentUser) ?
-            <>
-              <Router>
-                <Routes>
-                  <Route path="/" element={<StartPage />} />
-                  <Route path="/matches/create" element={<MatchCreate currentUserId={currentUser.id} />}/>
-                  <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
-                </Routes>
-              </Router>
-            </>
-          : (
-            <Login onSubmit={handleLogin} />
-          )}
+          {!isFetching && <>
+            {user ?
+              <>
+                <Router>
+                  <Routes>
+                    <Route path="/" element={<StartPage />} />
+                    <Route path="/matches/create" element={<MatchCreate currentUserId={user.id} />}/>
+                    <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
+                  </Routes>
+                </Router>
+              </>
+            : (
+              <Login onSubmit={handleLogin} />
+            )}
+          </>}
         </PageLayout>
 
       </Container>
