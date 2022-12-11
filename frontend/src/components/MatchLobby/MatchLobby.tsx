@@ -47,22 +47,18 @@ const MatchLobby = () => {
   return (
     <PageContainer size="large">
       {!!match && (
-      <>
-
-        <H1>
-          Lobby - "
-          {match.title}
-          "
-        </H1>
-        <Grid>
-          <Participants
-            participants={participants}
-            currentUserIsHost={currentUserId === match.hostUserId}
-            hostUserId={currentUserId}
-          />
-          <Settings match={match} />
-        </Grid>
-      </>
+        <>
+          <H1>
+            Lobby - &quot;{match.title}&quot;
+          </H1>
+          <Grid>
+            <Participants
+              participants={participants}
+              currentUserIsHost={currentUserId === match.hostUserId}
+            />
+            <Settings match={match} />
+          </Grid>
+        </>
       )}
     </PageContainer>
   );

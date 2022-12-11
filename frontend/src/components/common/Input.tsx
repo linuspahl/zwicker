@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const Input = styled.input`
   width: 100%;
@@ -8,6 +8,6 @@ const Input = styled.input`
   font-family: inherit;
   border: 1px solid #2b2b2b;
   border-radius: 3px;
-`
+`;
 
 export default Input;

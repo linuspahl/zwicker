@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const FormGroup = styled.div`
   display: flex;
@@ -12,6 +12,6 @@ const FormGroup = styled.div`
     flex-direction: row;
     align-items: flex-start;
   }
-`
+`;
 
 export default FormGroup;

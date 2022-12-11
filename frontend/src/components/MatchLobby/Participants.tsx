@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { H2, Icon } from "../common";
+import styled from 'styled-components';
+import { H2, Icon } from '../common';
 
-const  ListItem = styled.li`
+const ListItem = styled.li`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -9,16 +9,16 @@ const  ListItem = styled.li`
   :not(:last-child) {
     margin-bottom: 9px;
   }
-`
+`;
 
 const LeftCol = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
-const Name = styled.div``
+const Name = styled.div``;
 
-const Actions = styled.div``
+const Actions = styled.div``;
 
 const Number = styled.div`
   font-size: 24px;
@@ -31,37 +31,32 @@ const Number = styled.div`
   justify-content: center;
   align-items: center;
 
-`
+`;
 
 type Props = {
   participants: Array<{ username: string, id: number }>,
   currentUserIsHost: boolean,
-  hostUserId: number,
 }
 
-const Participants = ({ participants, currentUserIsHost, hostUserId  }: Props) => {
-  return (
-    <div>
-      <H2>Teilnehmer</H2>
-      <ul>
-        {participants.map(({ username, id }, index) => {
-          return (
-            <ListItem>
-              <LeftCol>
-                <Number>{index + 1}</Number>
-                <Name>{username}</Name>
-              </LeftCol>
-              {currentUserIsHost &&
-                <Actions>
-                  <Icon name="delete" />
-                </Actions>
-              }
-            </ListItem>
-          )
-        })}
-      </ul>
-    </div>
-  )
-}
+const Participants = ({ participants, currentUserIsHost }: Props) => (
+  <div>
+    <H2>Teilnehmer</H2>
+    <ul>
+      {participants.map(({ username, id }, index) => (
+        <ListItem key={id}>
+          <LeftCol>
+            <Number>{index + 1}</Number>
+            <Name>{username}</Name>
+          </LeftCol>
+          {currentUserIsHost && (
+            <Actions>
+              <Icon name="delete" />
+            </Actions>
+          )}
+        </ListItem>
+      ))}
+    </ul>
+  </div>
+);
 
 export default Participants;

@@ -1,3 +1,3 @@
-import MatchLobby from './MatchLobby'
+import MatchLobby from './MatchLobby';
 
 export default MatchLobby;

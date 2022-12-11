@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 type Size = 'large' | 'default';
 
-const Container = styled.div<{ $size: Size }>(({ $size }) => `
+const Container = styled.div<{ $size: Size | undefined }>(({ $size }) => `
   max-width: 500px;
   width: 100%;
   border-radius: 5px;
@@ -14,16 +14,14 @@ const Container = styled.div<{ $size: Size }>(({ $size }) => `
   `}
 `);
 
-const PageContainer = ({ children, size }: { children: React.ReactNode, size: Size }) => {
-  return (
-    <Container $size={size}>
-      {children}
-    </Container>
-  )
-}
+const PageContainer = ({ children, size }: { children: React.ReactNode, size?: Size }) => (
+  <Container $size={size}>
+    {children}
+  </Container>
+);
 
 PageContainer.defaultProps = {
-  size: 'default'
-}
+  size: 'default',
+};
 
-export default PageContainer
+export default PageContainer;

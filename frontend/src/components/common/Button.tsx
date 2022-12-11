@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 type Size = 'small' | 'default';
 
-const StyledButton = styled.button<{ $size: Size}>(({ $size }) => `
+const StyledButton = styled.button<{ $size: Size | undefined }>(({ $size }) => `
   font-size: inherit;
   background-color: white;
   border-radius: 9px;
@@ -22,23 +22,23 @@ const StyledButton = styled.button<{ $size: Size}>(({ $size }) => `
   ${$size === 'small' && `
     padding: 3px 12px;
   `}
-`)
+`);
 
 type Props = {
   children: React.ReactNode,
-  type: 'button' | 'submit',
-  size: Size,
+  type?: 'button' | 'submit',
+  size?: Size,
   onClick?: (event: React.SyntheticEvent) => void,
 }
 
-const Button = ({ children, type, size, onClick }: Props) => {
-  return <StyledButton type={type} $size={size} onClick={onClick}>{children}</StyledButton>
-}
+const Button = ({
+  children, type, size, onClick,
+}: Props) => <StyledButton type={type} $size={size} onClick={onClick}>{children}</StyledButton>;
 
 Button.defaultProps = {
   type: 'button',
   size: 'default',
   onClick: undefined,
-}
+};
 
 export default Button;
