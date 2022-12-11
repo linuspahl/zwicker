@@ -4,18 +4,19 @@ import {
   BrowserRouter as Router,
   Routes,
 } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import styled, { createGlobalStyle } from 'styled-components';
 import GlobalFonts from '../fonts';
 
 import Login from './Login';
 import './App.css';
-import { getCurrent, signin } from '../actions/users';
+import { signin } from '../actions/users';
 
 import MatchCreate from './MatchCreate';
 import MatchLobby from './MatchLobby';
 
 import StartPage from './StartPage';
+import CurrentUserProvider, { CurrentUserContext } from '../contexts/CurrentUserProvider';
+import BackendApiTokenProvider from '../contexts/BackendApiTokenProvider';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -57,14 +58,8 @@ const Container = styled.div`
   background-image: linear-gradient(to right bottom, #0963af, #0860a9, #075ca4, #06599e, #055699);
 `;
 
-const useCurrentUser = (accessToken: string | null) => {
-  const { data, isFetching } = useQuery({ queryKey: ['session', accessToken], queryFn: () => getCurrent(), enabled: !!accessToken });
-  return { data, isFetching };
-};
-
 function App() {
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem('access-token'));
-  const { data: user, isFetching } = useCurrentUser(accessToken);
 
   const handleLogin = useCallback(({
     username, password,
@@ -87,27 +82,35 @@ function App() {
   }, []);
 
   return (
-    <>
-      <GlobalFonts />
-      <GlobalStyle />
-      <Container>
-        <PageLayout>
-          {(!isFetching && user) && (
-            <Router>
-              <Routes>
-                <Route path="/" element={<StartPage />} />
-                <Route path="/matches/create" element={<MatchCreate currentUserId={user.id} />} />
-                <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
-              </Routes>
-            </Router>
-          )}
+    <BackendApiTokenProvider accessToken={accessToken}>
+      <CurrentUserProvider>
+        <CurrentUserContext.Consumer>
+          {(currentUser) => (
+            <>
+              <GlobalFonts />
+              <GlobalStyle />
+              <Container>
+                <PageLayout>
+                  {currentUser && (
+                    <Router>
+                      <Routes>
+                        <Route path="/" element={<StartPage />} />
+                        <Route path="/matches/create" element={<MatchCreate currentUserId={currentUser.id} />} />
+                        <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
+                      </Routes>
+                    </Router>
+                  )}
 
-          {(!!isFetching && !user) && (
-            <Login onSubmit={handleLogin} />
+                  {!currentUser && (
+                    <Login onSubmit={handleLogin} />
+                  )}
+                </PageLayout>
+              </Container>
+            </>
           )}
-        </PageLayout>
-      </Container>
-    </>
+        </CurrentUserContext.Consumer>
+      </CurrentUserProvider>
+    </BackendApiTokenProvider>
   );
 }
 
