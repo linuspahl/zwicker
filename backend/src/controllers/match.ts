@@ -1,6 +1,4 @@
 import db from '../models';
-import config from '../config/auth';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 const Match = db.match;
@@ -37,4 +35,13 @@ const getAll = (req, res) => {
   });
 }
 
-export default { create, getAll }
+
+const getOne = ({ params: { matchId }}, res) => {
+  Match.findByPk(matchId).then(match => {
+    res.status(200).send(match);
+  }).catch(err => {
+    res.status(500).send({ message: err.message });
+  });
+}
+
+export default { create, getAll, getOne }

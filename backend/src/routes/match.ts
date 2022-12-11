@@ -23,6 +23,13 @@ const matchRoutes = (app) => {
       controller.getAll
     ],
   );
+  app.get(
+    "/api/matches/:matchId",
+    [
+      authJwt.verifyToken,
+      controller.getOne
+    ],
+  );
 };
 
 export default matchRoutes

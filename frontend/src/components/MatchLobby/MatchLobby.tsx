@@ -3,6 +3,9 @@ import { H1, PageContainer } from "../common"
 import Participants from './Participants'
 import Settings from './Settings'
 import { Match } from "../../types/types";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { getOne } from "../../actions/matches";
 
 const participants = [
   {
@@ -26,27 +29,33 @@ const Grid = styled.div`
   }
 `;
 
-const EXAMPLE_MATCH = {
-  id: 'match-id',
-  title: 'Match Title',
-  hostUserId: 1,
-  hasPassword: false,
+
+const useMatch = (matchId: string): { data: Match | undefined, isFetching: boolean } => {
+  const { data, isFetching } = useQuery({ queryKey: ["matches", matchId], queryFn: () => getOne(matchId) })
+  return { data, isFetching };
 }
 
-type Props = {
-  match?: Match
-}
-const MatchLobby = ({ match = EXAMPLE_MATCH}: Props) => {
+const MatchLobby = () => {
   const currentUserId = 1;
-  const isHost = currentUserId === match.hostUserId;
+  const { matchId } = useParams();
+
+  if (!matchId) {
+    throw Error('Missing matchId.')
+  }
+
+  const { data: match } = useMatch(matchId)
 
   return (
     <PageContainer size="large">
-      <H1>Lobby - "{match.title}"</H1>
-      <Grid>
-        <Participants participants={participants} currentUserIsHost={isHost} hostUserId={currentUserId} />
-        <Settings match={match} />
-      </Grid>
+      {!!match && <>
+        <H1>Lobby - "{match.title}"</H1>
+        <Grid>
+          <Participants participants={participants}
+                        currentUserIsHost={currentUserId === match.hostUserId}
+                        hostUserId={currentUserId} />
+          <Settings match={match} />
+        </Grid>
+      </>}
     </PageContainer>
   )
 }

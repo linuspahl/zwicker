@@ -32,3 +32,19 @@ export const getAll = async (): Promise<Array<Match>> => {
     }
   }).then(({ data }) => data.map(fromJSON));
 }
+
+
+export const getOne = async (matchId: string): Promise<Match> => {
+  const accessToken = localStorage.getItem('access-token')
+
+  if (!accessToken) {
+    throw Error('missing access token');
+  }
+
+  return backendApi.get<MatchJSON>(`/api/matches/${matchId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-access-token': accessToken,
+    }
+  }).then(({ data }) => fromJSON(data));
+}
