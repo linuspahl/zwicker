@@ -30,6 +30,8 @@
   },
   "eslintConfig": {
     "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
       "airbnb",
       "airbnb/hooks",
       "plugin:@typescript-eslint/recommended"
@@ -38,15 +40,48 @@
     "plugins": [
       "@typescript-eslint"
     ],
+    "rules": {
+      "no-multiple-empty-lines": [
+        "error",
+        {
+          "max": 1,
+          "maxEOF": 1
+        }
+      ],
+      "react/react-in-jsx-scope": "off",
+      "react/jsx-filename-extension": [
+        2,
+        {
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx"
+          ]
+        }
+      ],
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "js": "never",
+          "jsx": "never",
+          "ts": "never",
+          "tsx": "never"
+        }
+      ]
+    },
     "root": true,
-    "import/resolver": {
-      "node": {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx"
+          ]
+        }
       }
     }
   },
