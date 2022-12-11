@@ -33,7 +33,6 @@ export const getAll = async (): Promise<Array<Match>> => {
   }).then(({ data }) => data.map(fromJSON));
 }
 
-
 export const getOne = async (matchId: string): Promise<Match> => {
   const accessToken = localStorage.getItem('access-token')
 
