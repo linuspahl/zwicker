@@ -38,7 +38,17 @@
     "plugins": [
       "@typescript-eslint"
     ],
-    "root": true
+    "root": true,
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      }
+    }
   },
   "browserslist": {
     "production": [
