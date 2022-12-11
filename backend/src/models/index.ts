@@ -50,5 +50,4 @@ db.match.hasOne(db.user, {
   targetKey: "host_user_id",
 });
 
-
 export default db;

@@ -2,8 +2,6 @@ import db from '../models';
 import bcrypt from 'bcryptjs';
 
 const Match = db.match;
-const Role = db.role;
-const Op = db.Sequelize.Op;
 
 const formatMatch = (match) => ({
   id: match.id,
@@ -34,7 +32,6 @@ const getAll = (req, res) => {
     res.status(500).send({ message: err.message });
   });
 }
-
 
 const getOne = ({ params: { matchId }}, res) => {
   Match.findByPk(matchId).then(match => {
