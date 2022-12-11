@@ -1,26 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
 import React from 'react';
-import useBackendApi from '../hooks/useBackendApi';
-import useBackendApiToken from '../hooks/useBackendApiToken';
-import { User, UserJSON } from '../types/types';
+import { User } from '../types/types';
 
 export const CurrentUserContext = React.createContext<undefined | User>(undefined);
-const fromJSON = ({ username, id }: UserJSON): User => ({
-  id,
-  username,
-});
 
-const useFetchCurrentUser = () => {
-  const { get } = useBackendApi<UserJSON>();
-  const accessToken = useBackendApiToken();
-  const fetchUsers = () => get('/api/session/current').then(({ data }) => fromJSON(data));
-  const { data, isLoading } = useQuery({ queryKey: ['session', accessToken], queryFn: fetchUsers, enabled: !!accessToken });
-  return { data, isLoading };
-};
-
-const CurrentUserProvider = ({ children }: {
+type Props = {
   children: React.ReactNode,
-}) => {
+}
+
+const CurrentUserProvider = ({ children }: Props) => {
   const { data: currentUser, isLoading } = useFetchCurrentUser();
 
   if (isLoading) {

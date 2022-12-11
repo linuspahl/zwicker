@@ -2,9 +2,13 @@ import { useContext } from 'react';
 import { BackendApiTokenContext } from '../contexts/BackendApiTokenProvider';
 
 const useBackendApiToken = () => {
-  const accessToken = useContext(BackendApiTokenContext);
+  const contextValue = useContext(BackendApiTokenContext);
 
-  return accessToken;
+  if (!contextValue) {
+    throw Error('useBackendApiToken needs to be rendered in BackendApiTokenContext.Provider');
+  }
+
+  return contextValue;
 };
 
 export default useBackendApiToken;

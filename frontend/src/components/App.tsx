@@ -1,4 +1,3 @@
-import { useCallback, useState } from 'react';
 import {
   Route,
   BrowserRouter as Router,
@@ -9,7 +8,6 @@ import GlobalFonts from '../fonts';
 
 import Login from './Login';
 import './App.css';
-import { signin } from '../actions/users';
 
 import MatchCreate from './MatchCreate';
 import MatchLobby from './MatchLobby';
@@ -59,30 +57,8 @@ const Container = styled.div`
 `;
 
 function App() {
-  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('access-token'));
-
-  const handleLogin = useCallback(({
-    username, password,
-  }: {
-    username?: string,
-    password?: string
-  }) => {
-    if (!username || !password) {
-      throw Error('Password or username missing');
-    }
-
-    return signin(username, password).then(({
-      data,
-    }) => {
-      if (data.accessToken) {
-        localStorage.setItem('access-token', data.accessToken);
-        setAccessToken(data.accessToken);
-      }
-    });
-  }, []);
-
   return (
-    <BackendApiTokenProvider accessToken={accessToken}>
+    <BackendApiTokenProvider>
       <CurrentUserProvider>
         <CurrentUserContext.Consumer>
           {(currentUser) => (
@@ -101,9 +77,7 @@ function App() {
                     </Router>
                   )}
 
-                  {!currentUser && (
-                    <Login onSubmit={handleLogin} />
-                  )}
+                  {!currentUser && <Login />}
                 </PageLayout>
               </Container>
             </>

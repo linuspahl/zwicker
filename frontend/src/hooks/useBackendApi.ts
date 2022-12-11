@@ -1,8 +1,8 @@
 import backendApi from '../backendApi';
 import useBackendApiToken from './useBackendApiToken';
 
-const useBackendApi = <T>() => {
-  const accessToken = useBackendApiToken();
+const useBackendApi = () => {
+  const { accessToken } = useBackendApiToken();
 
   const headers = {
     'Content-Type': 'application/json',
@@ -10,7 +10,7 @@ const useBackendApi = <T>() => {
   };
 
   return {
-    get: (url: string) => backendApi.get<T>(url, { headers }),
+    get: <T>(url: string) => backendApi.get<T>(url, { headers }),
   };
 };
 

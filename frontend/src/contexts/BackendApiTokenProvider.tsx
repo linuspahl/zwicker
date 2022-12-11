@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 
-export const BackendApiTokenContext = React.createContext<string | null>(null);
+export const BackendApiTokenContext = React.createContext<undefined | {
+    accessToken: string | null,
+    setAccessToken:(accessToken: string | null) => void
+      }>(undefined);
 
-const BackendApiTokenProvider = ({ children, accessToken }: {
-    children: React.ReactNode,
-    accessToken: string | null
-}) => (
-  <BackendApiTokenContext.Provider value={accessToken}>
-    {children}
-  </BackendApiTokenContext.Provider>
-);
+type Props = {
+  children: React.ReactNode,
+}
+const BackendApiTokenProvider = ({ children }: Props) => {
+  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('access-token'));
+  const contextValue = useMemo(() => ({ accessToken, setAccessToken }), [accessToken]);
+
+  return (
+    <BackendApiTokenContext.Provider value={contextValue}>
+      {children}
+    </BackendApiTokenContext.Provider>
+  );
+};
 
 export default BackendApiTokenProvider;
