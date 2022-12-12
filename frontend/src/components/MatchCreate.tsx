@@ -17,7 +17,7 @@ const FormActions = styled.div`
   margin-top: 18px;
 `;
 
-function MatchCreate({ currentUserId }: { currentUserId: string }) {
+const MatchCreate = ({ currentUserId }: { currentUserId: string }) => {
   const navigate = useNavigate();
 
   const createMatch = ({ title, password }: MatchFormValues) => createMatchAction(
@@ -44,6 +44,6 @@ function MatchCreate({ currentUserId }: { currentUserId: string }) {
       </Formik>
     </PageContainer>
   );
-}
+};
 
 export default MatchCreate;

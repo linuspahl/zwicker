@@ -14,19 +14,17 @@ type LoginFormValues = {
   password?: string,
 }
 
-function LoginForm({ onSubmit }: { onSubmit: (values: LoginFormValues) => void }) {
-  return (
-    <Formik<LoginFormValues> onSubmit={onSubmit} initialValues={{ username: '', password: '' }}>
-      <Form>
-        <FormikFormGroup name="username" label="Nutzername" />
-        <FormikFormGroup name="password" label="Passwort" type="password" />
+const LoginForm = ({ onSubmit }: { onSubmit: (values: LoginFormValues) => void }) => (
+  <Formik<LoginFormValues> onSubmit={onSubmit} initialValues={{ username: '', password: '' }}>
+    <Form>
+      <FormikFormGroup name="username" label="Nutzername" />
+      <FormikFormGroup name="password" label="Passwort" type="password" />
 
-        <FormActions>
-          <Button type="submit">Anmelden</Button>
-        </FormActions>
-      </Form>
-    </Formik>
-  );
-}
+      <FormActions>
+        <Button type="submit">Anmelden</Button>
+      </FormActions>
+    </Form>
+  </Formik>
+);
 
 export default LoginForm;

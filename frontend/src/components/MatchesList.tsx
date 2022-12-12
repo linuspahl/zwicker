@@ -33,7 +33,7 @@ const joinMatch = (matchId: string) => (
   Promise.resolve({ data: { id: matchId, success: true } })
 );
 
-function MatchesListItem({ match: { title, hasPassword, id } }: { match: Match }) {
+const MatchesListItem = ({ match: { title, hasPassword, id } }: { match: Match }) => {
   const navigate = useNavigate();
 
   const onJoinMatch = () => {
@@ -67,14 +67,12 @@ function MatchesListItem({ match: { title, hasPassword, id } }: { match: Match }
       </ItemActions>
     </ItemContainer>
   );
-}
+};
 
-function MatchesList({ matches }: { matches: Array<Match> }) {
-  return (
-    <div>
-      {matches?.length ? matches.map((match) => <MatchesListItem match={match} key={match.id} />) : 'Keine vorhanden.'}
-    </div>
-  );
-}
+const MatchesList = ({ matches }: { matches: Array<Match> }) => (
+  <div>
+    {matches?.length ? matches.map((match) => <MatchesListItem match={match} key={match.id} />) : 'Keine vorhanden.'}
+  </div>
+);
 
 export default MatchesList;

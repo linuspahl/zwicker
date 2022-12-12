@@ -21,7 +21,7 @@ const ButtonGroup = styled.div`
   align-items: center;
 `;
 
-function CreateNew() {
+const CreateNew = () => {
   const navigate = useNavigate();
 
   return (
@@ -31,14 +31,14 @@ function CreateNew() {
       </Button>
     </ButtonGroup>
   );
-}
+};
 
 const useMatches = (): { data: Array<Match> | undefined, isFetching: boolean } => {
   const { data, isFetching } = useQuery({ queryKey: ['matches'], queryFn: () => getAll() });
   return { data, isFetching };
 };
 
-function StartPage() {
+const StartPage = () => {
   const { data: matches } = useMatches();
 
   return (
@@ -52,6 +52,6 @@ function StartPage() {
       <CreateNew />
     </PageContainer>
   );
-}
+};
 
 export default StartPage;

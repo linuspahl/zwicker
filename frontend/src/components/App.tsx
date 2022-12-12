@@ -56,36 +56,34 @@ const Container = styled.div`
   background-image: linear-gradient(to right bottom, #0963af, #0860a9, #075ca4, #06599e, #055699);
 `;
 
-function App() {
-  return (
-    <BackendApiTokenProvider>
-      <CurrentUserProvider>
-        <CurrentUserContext.Consumer>
-          {(currentUser) => (
-            <>
-              <GlobalFonts />
-              <GlobalStyle />
-              <Container>
-                <PageLayout>
-                  {currentUser && (
-                    <Router>
-                      <Routes>
-                        <Route path="/" element={<StartPage />} />
-                        <Route path="/matches/create" element={<MatchCreate currentUserId={currentUser.id} />} />
-                        <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
-                      </Routes>
-                    </Router>
-                  )}
+const App = () => (
+  <BackendApiTokenProvider>
+    <CurrentUserProvider>
+      <CurrentUserContext.Consumer>
+        {(currentUser) => (
+          <>
+            <GlobalFonts />
+            <GlobalStyle />
+            <Container>
+              <PageLayout>
+                {currentUser && (
+                  <Router>
+                    <Routes>
+                      <Route path="/" element={<StartPage />} />
+                      <Route path="/matches/create" element={<MatchCreate currentUserId={currentUser.id} />} />
+                      <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
+                    </Routes>
+                  </Router>
+                )}
 
-                  {!currentUser && <Login />}
-                </PageLayout>
-              </Container>
-            </>
-          )}
-        </CurrentUserContext.Consumer>
-      </CurrentUserProvider>
-    </BackendApiTokenProvider>
-  );
-}
+                {!currentUser && <Login />}
+              </PageLayout>
+            </Container>
+          </>
+        )}
+      </CurrentUserContext.Consumer>
+    </CurrentUserProvider>
+  </BackendApiTokenProvider>
+);
 
 export default App;
