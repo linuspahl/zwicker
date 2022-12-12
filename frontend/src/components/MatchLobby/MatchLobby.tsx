@@ -1,11 +1,9 @@
 import styled from 'styled-components';
-import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { H1, PageContainer } from '../common';
+import { Button, H1, PageContainer } from '../common';
 import Participants from './Participants';
 import Settings from './Settings';
-import { Match } from '../../types/types';
-import { getOne } from '../../actions/matches';
+import useFetchMatch from '../../hooks/useFetchMatch';
 
 const participants = [
   {
@@ -29,10 +27,9 @@ const Grid = styled.div`
   }
 `;
 
-const useMatch = (matchId: string): { data: Match | undefined, isFetching: boolean } => {
-  const { data, isFetching } = useQuery({ queryKey: ['matches', matchId], queryFn: () => getOne(matchId) });
-  return { data, isFetching };
-};
+const ActionsRow = styled.div`
+  display: flex;
+`;
 
 const MatchLobby = () => {
   const currentUserId = 1;
@@ -42,7 +39,9 @@ const MatchLobby = () => {
     throw Error('Missing matchId.');
   }
 
-  const { data: match } = useMatch(matchId);
+  const { data: match } = useFetchMatch(matchId);
+
+  const currentUserIsHost = currentUserId === match?.hostUserId;
 
   return (
     <PageContainer size="large">
@@ -54,12 +53,20 @@ const MatchLobby = () => {
           <Grid>
             <Participants
               participants={participants}
-              currentUserIsHost={currentUserId === match.hostUserId}
+              currentUserIsHost={currentUserIsHost}
             />
             <Settings match={match} />
           </Grid>
         </>
       )}
+      <ActionsRow>
+        {currentUserIsHost ? (
+          <>
+            <Button>Spiel löschen</Button>
+            <Button>Spiel starten</Button>
+          </>
+        ) : <Button>Spiel verlassen</Button>}
+      </ActionsRow>
     </PageContainer>
   );
 };

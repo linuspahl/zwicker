@@ -1,14 +1,11 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { Match } from '../types/types';
 
 import { Button, PageContainer } from './common';
 import H1 from './common/H1';
 import H2 from './common/H2';
 import MatchesList from './MatchesList';
-
-import { getAll } from '../actions/matches';
+import useFetchMatches from '../hooks/useFetchMatches';
 
 const Section = styled.div`
   margin-bottom: 24px;
@@ -33,13 +30,8 @@ const CreateNew = () => {
   );
 };
 
-const useMatches = (): { data: Array<Match> | undefined, isFetching: boolean } => {
-  const { data, isFetching } = useQuery({ queryKey: ['matches'], queryFn: () => getAll() });
-  return { data, isFetching };
-};
-
 const StartPage = () => {
-  const { data: matches } = useMatches();
+  const { data: matches } = useFetchMatches();
 
   return (
     <PageContainer>

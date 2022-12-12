@@ -7,9 +7,15 @@ import useBackendApiToken from './useBackendApiToken';
 const useFetchCurrentUser = () => {
   const { get } = useBackendApi();
   const { accessToken } = useBackendApiToken();
-  const fetchUsers = () => get<UserJSON>('/api/session/current').then(({ data }) => fromJSON(data));
-  const { data, isLoading } = useQuery({ queryKey: ['session', accessToken], queryFn: fetchUsers, enabled: !!accessToken });
-  return { data, isLoading };
+  const fetchUser = () => get<UserJSON>('/api/session/current').then(({ data }) => fromJSON(data));
+  const { data, isFetching } = useQuery({
+    queryKey: ['session', accessToken],
+    queryFn: fetchUser,
+    enabled: !!accessToken,
+    retry: false,
+  });
+
+  return { data, isFetching };
 };
 
 export default useFetchCurrentUser;

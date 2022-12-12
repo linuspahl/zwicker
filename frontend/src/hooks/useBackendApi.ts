@@ -11,6 +11,7 @@ const useBackendApi = () => {
 
   return {
     get: <T>(url: string) => backendApi.get<T>(url, { headers }),
+    post: <T>(url: string, payload: unknown) => backendApi.post<T>(url, payload, { headers }),
   };
 };
 

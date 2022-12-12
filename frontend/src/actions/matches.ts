@@ -1,7 +1,6 @@
 import backendApi from '../backendApi';
-import { fromJSON } from '../models/Match';
-import type { Match, MatchJSON } from '../types/types';
 
+// eslint-disable-next-line import/prefer-default-export
 export const create = (curentUserId: number, title: string, password: string | undefined) => {
   const accessToken = localStorage.getItem('access-token');
 
@@ -15,34 +14,4 @@ export const create = (curentUserId: number, title: string, password: string | u
       'x-access-token': accessToken,
     },
   });
-};
-
-export const getAll = async (): Promise<Array<Match>> => {
-  const accessToken = localStorage.getItem('access-token');
-
-  if (!accessToken) {
-    throw Error('missing access token');
-  }
-
-  return backendApi.get<Array<MatchJSON>>('/api/matches', {
-    headers: {
-      'Content-Type': 'application/json',
-      'x-access-token': accessToken,
-    },
-  }).then(({ data }) => data.map(fromJSON));
-};
-
-export const getOne = async (matchId: string): Promise<Match> => {
-  const accessToken = localStorage.getItem('access-token');
-
-  if (!accessToken) {
-    throw Error('missing access token');
-  }
-
-  return backendApi.get<MatchJSON>(`/api/matches/${matchId}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      'x-access-token': accessToken,
-    },
-  }).then(({ data }) => fromJSON(data));
 };

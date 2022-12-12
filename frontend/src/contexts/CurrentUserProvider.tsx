@@ -1,4 +1,5 @@
 import React from 'react';
+import useFetchCurrentUser from '../hooks/useFetchCurrentUser';
 import { User } from '../types/types';
 
 export const CurrentUserContext = React.createContext<undefined | User>(undefined);
@@ -8,13 +9,17 @@ type Props = {
 }
 
 const CurrentUserProvider = ({ children }: Props) => {
-  const { data: currentUser, isLoading } = useFetchCurrentUser();
+  const { data: currentUser, isFetching } = useFetchCurrentUser();
 
-  if (isLoading) {
+  if (isFetching) {
     return <div>Spinner</div>;
   }
 
-  return <CurrentUserContext.Provider value={currentUser}>{children}</CurrentUserContext.Provider>;
+  return (
+    <CurrentUserContext.Provider value={currentUser}>
+      {children}
+    </CurrentUserContext.Provider>
+  );
 };
 
 export default CurrentUserProvider;
