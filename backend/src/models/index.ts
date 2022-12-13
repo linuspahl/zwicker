@@ -50,4 +50,10 @@ db.match.hasOne(db.user, {
   targetKey: "host_user_id",
 });
 
+db.match.belongsToMany(db.user, {
+  through: "match_users",
+  foreignKey: "matchId",
+  otherKey: "userId"
+});
+
 export default db;

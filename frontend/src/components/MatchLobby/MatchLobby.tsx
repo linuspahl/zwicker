@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCallback } from 'react';
 import { Button, H1, PageContainer } from '../common';
 import Participants from './Participants';

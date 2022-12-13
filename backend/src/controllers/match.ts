@@ -10,19 +10,19 @@ const formatMatch = (match) => ({
   status: match.status
 })
 
-const create = ({ body: { host_user_id, title, password } }, res) => {
-  Match.create({
-    host_user_id: host_user_id,
+const create = async ({ userId, body: { title, password } }, res) => {
+  const match = await Match.create({
+    host_user_id: userId,
     title,
     status: 'lobby',
     password: password ? bcrypt.hashSync(password, 8) : null,
-  })
-  .then(match => {
-    res.send({ message: "Match was created successfully!", match: formatMatch(match) });
-  })
-  .catch(err => {
+  }).catch(err => {
     res.status(500).send({ message: err.message });
   });
+
+  await match.addUsers(userId)
+
+  return res.send({ message: "Match was created successfully!", match: formatMatch(match) });
 };
 
 const getAll = (req, res) => {

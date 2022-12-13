@@ -17,11 +17,10 @@ const FormActions = styled.div`
   margin-top: 18px;
 `;
 
-const MatchCreate = ({ currentUserId }: { currentUserId: string }) => {
+const MatchCreate = () => {
   const navigate = useNavigate();
 
   const createMatch = ({ title, password }: MatchFormValues) => createMatchAction(
-    Number(currentUserId),
     title,
     password,
   ).then((response) => {

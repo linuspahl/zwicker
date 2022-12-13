@@ -70,7 +70,7 @@ const App = () => (
                   <Router>
                     <Routes>
                       <Route path="/" element={<StartPage />} />
-                      <Route path="/matches/create" element={<MatchCreate currentUserId={currentUser.id} />} />
+                      <Route path="/matches/create" element={<MatchCreate />} />
                       <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
                     </Routes>
                   </Router>
