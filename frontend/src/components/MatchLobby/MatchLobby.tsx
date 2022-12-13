@@ -1,9 +1,12 @@
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useCallback } from 'react';
 import { Button, H1, PageContainer } from '../common';
 import Participants from './Participants';
 import Settings from './Settings';
 import useFetchMatch from '../../hooks/useFetchMatch';
+import useDeleteMatch from '../../hooks/useDeleteMatch';
+import useStartMatch from '../../hooks/useStartMatch';
 
 const participants = [
   {
@@ -29,17 +32,28 @@ const Grid = styled.div`
 
 const ActionsRow = styled.div`
   display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
 `;
 
 const MatchLobby = () => {
+  const navigate = useNavigate();
   const currentUserId = 1;
   const { matchId } = useParams();
+  const { deleteMatch } = useDeleteMatch();
+  const { startMatch } = useStartMatch();
 
   if (!matchId) {
     throw Error('Missing matchId.');
   }
 
   const { data: match } = useFetchMatch(matchId);
+  const onMatchDelete = useCallback(() => deleteMatch(matchId), [deleteMatch, matchId]);
+  const onMatchStart = useCallback(() => startMatch(matchId), [startMatch, matchId]);
+
+  if (match?.status === 'running') {
+    navigate(`/matches/table/${matchId}`, { replace: true });
+  }
 
   const currentUserIsHost = currentUserId === match?.hostUserId;
 
@@ -62,8 +76,8 @@ const MatchLobby = () => {
       <ActionsRow>
         {currentUserIsHost ? (
           <>
-            <Button>Spiel löschen</Button>
-            <Button>Spiel starten</Button>
+            <Button onClick={onMatchDelete}>Spiel löschen</Button>
+            <Button onClick={onMatchStart}>Spiel starten</Button>
           </>
         ) : <Button>Spiel verlassen</Button>}
       </ActionsRow>

@@ -33,14 +33,24 @@ const CreateNew = () => {
 const StartPage = () => {
   const { data: matches } = useFetchMatches();
 
+  const lobbyMatches = matches?.filter(({ status }) => status === 'lobby');
+  const runningMatches = matches?.filter(({ status }) => status === 'running');
+
   return (
     <PageContainer>
       <H1>Zwicker</H1>
-      <Section>
-        <H2>Bald startende Spiele</H2>
-        {!!matches?.length && <MatchesList matches={matches} />}
-        {/* TODO: Display loading spinner & No result info */}
-      </Section>
+      {!!lobbyMatches?.length && (
+        <Section>
+          <H2>Bald startende Spiele</H2>
+          <MatchesList matches={lobbyMatches} />
+        </Section>
+      )}
+      {!!runningMatches?.length && (
+        <Section>
+          <H2>Laufende Spiele</H2>
+          <MatchesList matches={runningMatches} />
+        </Section>
+      )}
       <CreateNew />
     </PageContainer>
   );

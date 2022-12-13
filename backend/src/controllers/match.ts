@@ -41,4 +41,34 @@ const getOne = ({ params: { matchId }}, res) => {
   });
 }
 
-export default { create, getAll, getOne }
+const start = async ({ params: { matchId } }, res) => {
+  const match = await Match.findByPk(matchId).catch(err => {
+    res.status(500).send({ message: err.message });
+  });
+  
+  if (match.status !== 'lobby') {
+    return res.status(400).send({ message: `Match can not started because its status is not "lobby", but "${match.status}"` });  
+  }
+
+  match.status = 'running';
+
+  await match.save();
+  
+  return res.status(200).send(match);
+}
+
+const deleteOne = async ({ userId, params: { matchId } }, res) => {
+  const match = await Match.findByPk(matchId).catch(err => {
+    res.status(500).send({ message: err.message });
+  });
+  
+  if (match.host_user_id !== userId) {
+    return res.status(400).send({ message: 'Match can not be deleted because you are not the host' });  
+  }
+
+  match.destroy();
+
+  return res.status(200);
+}
+
+export default { start, create, getAll, getOne, deleteOne }

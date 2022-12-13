@@ -5,11 +5,13 @@ export const fromJSON = ({
   title,
   has_password: hasPassword,
   host_user_id: hostUserId,
+  status,
 }: MatchJSON): Match => ({
   id,
   title,
   hasPassword,
   hostUserId,
+  status,
 });
 
 export const toJSON = ({
@@ -17,9 +19,11 @@ export const toJSON = ({
   title,
   hasPassword,
   hostUserId,
+  status,
 }: Match): MatchJSON => ({
   id,
   title,
   has_password: hasPassword,
   host_user_id: hostUserId,
+  status,
 });

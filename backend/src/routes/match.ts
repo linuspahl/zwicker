@@ -30,6 +30,20 @@ const matchRoutes = (app) => {
       controller.getOne
     ],
   );
+  app.delete(
+    "/api/matches/:matchId/delete",
+    [
+      authJwt.verifyToken,
+      controller.deleteOne
+    ],
+  );
+  app.put(
+    "/api/matches/:matchId/start",
+    [
+      authJwt.verifyToken,
+      controller.start
+    ],
+  );
 };
 
 export default matchRoutes
