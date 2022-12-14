@@ -6,7 +6,7 @@ import useBackendApi from './useBackendApi';
 const useMatches = (): { data: Array<Match> | undefined, isFetching: boolean } => {
   const { get } = useBackendApi();
   const fetchMatches = () => get<Array<MatchJSON>>('/api/matches').then(({ data }) => data.map(fromJSON));
-  const { data, isFetching } = useQuery({ queryKey: ['matches'], queryFn: fetchMatches });
+  const { data, isFetching } = useQuery({ queryKey: ['matches', 'list'], queryFn: fetchMatches });
   return { data, isFetching };
 };
 
