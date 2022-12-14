@@ -5,7 +5,7 @@ const FormGroup = styled.div`
   flex-direction: column;
 
   :not(:last-child) {
-    margin-bottom: 12px;
+    margin-bottom: var(--spacing);
   }
 
   @media only screen and (min-device-width: 480px) {

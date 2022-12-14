@@ -14,7 +14,7 @@ type MatchFormValues = {
 const FormActions = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 18px;
+  margin-top: var(--spacing);
 `;
 
 const MatchCreate = () => {

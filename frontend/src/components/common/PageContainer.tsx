@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 type Size = 'large' | 'default';
 
@@ -7,9 +7,9 @@ const Container = styled.div<{ $size: Size | undefined }>(({ $size }) => `
   width: 100%;
   border-radius: 5px;
   background-color: white;
-  padding: 15px 21px;
+  padding: var(--spacing);
 
-  ${$size === 'large' && `
+  ${$size === 'large' && css`
     max-width: 1000px;
   `}
 `);

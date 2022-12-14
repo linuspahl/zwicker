@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 type Size = 'small' | 'default';
 
@@ -7,7 +7,7 @@ const StyledButton = styled.button<{ $size: Size | undefined }>(({ $size }) => `
   font-size: inherit;
   background-color: white;
   border-radius: 9px;
-  padding: 6px 24px;
+  padding: var(--small-spacing) var(--spacing);
   border-width: 1px;
   border-color: #3f51b5;
 
@@ -19,9 +19,10 @@ const StyledButton = styled.button<{ $size: Size | undefined }>(({ $size }) => `
     background-color: #d9d9d9;
   }
 
-  ${$size === 'small' && `
-    padding: 3px 12px;
-  `}
+  ${$size === 'small' ? css`
+    padding: var(--tiny-spacing) var(--small-spacing);
+    border-radius: 6px;
+  ` : ''}
 `);
 
 type Props = {

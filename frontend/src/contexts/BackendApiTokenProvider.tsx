@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 export const BackendApiTokenContext = React.createContext<undefined | {
     accessToken: string | null,
@@ -10,7 +10,14 @@ type Props = {
 }
 const BackendApiTokenProvider = ({ children }: Props) => {
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem('access-token'));
-  const contextValue = useMemo(() => ({ accessToken, setAccessToken }), [accessToken]);
+  const onSetAccessToken = useCallback((value: string | null) => {
+    localStorage.setItem('access-token', value ?? '');
+    setAccessToken(value);
+  }, []);
+  const contextValue = useMemo(
+    () => ({ accessToken, setAccessToken: onSetAccessToken }),
+    [accessToken, onSetAccessToken],
+  );
 
   return (
     <BackendApiTokenContext.Provider value={contextValue}>

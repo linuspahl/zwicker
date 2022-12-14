@@ -8,7 +8,7 @@ const Help = styled.div`
   color: grey;
   line-height: 1rem;
   font-size: 1rem;
-  margin-top: 3px;
+  margin-top: var(--tiny-spacing);
 `;
 
 const InputWrapper = styled.div`
