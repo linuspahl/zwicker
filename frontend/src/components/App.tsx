@@ -28,6 +28,7 @@ const GlobalStyle = createGlobalStyle`
     --small-spacing: calc(var(--root-spacing) * 4);
     --spacing: calc(var(--root-spacing) * 6);
     --large-spacing: calc(var(--root-spacing) * 8);
+    --extra-large-spacing: calc(var(--root-spacing) * 12);
   }
 
   body {

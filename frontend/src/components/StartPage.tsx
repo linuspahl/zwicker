@@ -8,13 +8,15 @@ import MatchesList from './MatchesList';
 import useFetchMatches from '../hooks/useFetchMatches';
 
 const Section = styled.div`
-  margin-bottom: var(--large-spacing);
+  :not(:last-child) {
+    margin-bottom: var(--large-spacing);
+  }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: var(--large-spacing);
+  margin-top: var(--extra-large-spacing);
   align-items: center;
 `;
 

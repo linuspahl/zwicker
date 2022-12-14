@@ -33,7 +33,7 @@ const Grid = styled.div`
 const ActionsRow = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: var(--large-spacing);
+  margin-top: var(--extra-large-spacing);
 `;
 
 const MatchLobby = () => {

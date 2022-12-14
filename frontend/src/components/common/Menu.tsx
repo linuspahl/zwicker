@@ -15,6 +15,7 @@ const Sidebar = styled.div`
   height: 100%;
   width: 300px;
   background-color: white;
+  padding: var(--spacing);
 `;
 
 const Overlay = styled.div`
@@ -39,8 +40,8 @@ const Menu = ({ toggleMenu }: Props) => {
   return (
     <Container>
       <Sidebar>
-        <h2>Das Menü</h2>
-        <Button onClick={logout}>Abmelden</Button>
+        <h2>Menü</h2>
+        <Button onClick={logout} size="small">Abmelden</Button>
       </Sidebar>
       <Overlay onClick={toggleMenu} />
     </Container>
