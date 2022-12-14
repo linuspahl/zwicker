@@ -23,19 +23,24 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   :root {
+    font-size: 18px;
+
     --root-spacing: 3px;
     --tiny-spacing: calc(var(--root-spacing) * 2);
     --small-spacing: calc(var(--root-spacing) * 4);
     --spacing: calc(var(--root-spacing) * 6);
     --large-spacing: calc(var(--root-spacing) * 8);
     --extra-large-spacing: calc(var(--root-spacing) * 12);
+
+    --large-font-size: 1.44rem;
+    --extra-large-font-size: 2.074rem;
   }
 
   body {
     color: #202124;
     height: 100vh;
     margin: 0;
-    font-size: 1.2rem;
+    font-size: var(--root-font-size);
   }
 
   body, button {

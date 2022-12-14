@@ -7,7 +7,6 @@ import Label from './Label';
 const Help = styled.div`
   color: grey;
   line-height: 1rem;
-  font-size: 1rem;
   margin-top: var(--tiny-spacing);
 `;
 

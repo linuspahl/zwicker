@@ -4,11 +4,11 @@ import styled, { css } from 'styled-components';
 type Size = 'small' | 'default';
 
 const StyledButton = styled.button<{ $size: Size | undefined }>(({ $size }) => `
-  font-size: inherit;
   background-color: white;
   border-radius: 9px;
   padding: var(--small-spacing) var(--spacing);
   border-width: 1px;
+  font-size: var(--large-font-size);
   border-color: #3f51b5;
 
   :hover {
@@ -20,6 +20,7 @@ const StyledButton = styled.button<{ $size: Size | undefined }>(({ $size }) => `
   }
 
   ${$size === 'small' ? css`
+    font-size: var(--root-font-size);
     padding: var(--tiny-spacing) var(--small-spacing);
     border-radius: 6px;
   ` : ''}

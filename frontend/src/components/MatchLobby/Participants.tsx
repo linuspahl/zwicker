@@ -21,7 +21,7 @@ const Name = styled.div``;
 const Actions = styled.div``;
 
 const Number = styled.div`
-  font-size: 24px;
+  font-size: var(--large-font-size);
   margin-right: 5px;
   height: 30px;
   width: 30px;

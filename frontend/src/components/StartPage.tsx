@@ -25,7 +25,7 @@ const CreateNew = () => {
 
   return (
     <ButtonGroup>
-      <Button onClick={() => navigate('matches/create')}>
+      <Button onClick={() => navigate('matches/create')} size="small">
         ...oder neues Spiel erstellen
       </Button>
     </ButtonGroup>
