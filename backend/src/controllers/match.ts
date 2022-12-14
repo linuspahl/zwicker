@@ -41,6 +41,18 @@ const getOne = ({ params: { matchId }}, res) => {
   });
 }
 
+const getUsers = async ({ params: { matchId }}, res) => {
+  const match = await Match.findByPk(matchId).catch(err => {
+    res.status(500).send({ message: err.message });
+  });
+
+  return match.getUsers().then((users) => {
+    res.status(200).send(users.map(({ id, username }) => ({ id, username })));
+  }).catch(err => {
+    res.status(500).send({ message: err.message });
+  });
+}
+
 const start = async ({ params: { matchId } }, res) => {
   const match = await Match.findByPk(matchId).catch(err => {
     res.status(500).send({ message: err.message });
@@ -52,6 +64,21 @@ const start = async ({ params: { matchId } }, res) => {
 
   match.status = 'running';
 
+  await match.save();
+  
+  return res.status(200).send(match);
+}
+
+const join = async ({ userId, params: { matchId } }, res) => {
+  const match = await Match.findByPk(matchId).catch(err => {
+    res.status(500).send({ message: err.message });
+  });
+  
+  if (match.status !== 'lobby') {
+    return res.status(400).send({ message: `Match can not be jpined because its status is not "lobby", but "${match.status}"` });  
+  }
+
+  match.addUsers(userId)
   await match.save();
   
   return res.status(200).send(match);
@@ -71,4 +98,12 @@ const deleteOne = async ({ userId, params: { matchId } }, res) => {
   return res.status(200);
 }
 
-export default { start, create, getAll, getOne, deleteOne }
+export default {
+  start,
+  create,
+  getAll,
+  getOne,
+  deleteOne,
+  join,
+  getUsers,
+}

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
 import { H2, Icon } from '../common';
 
 const ListItem = styled.li`
@@ -34,29 +35,36 @@ const Number = styled.div`
 `;
 
 type Props = {
-  participants: Array<{ username: string, id: number }>,
   currentUserIsHost: boolean,
+  matchId: string,
+  hostUserId: number,
 }
 
-const Participants = ({ participants, currentUserIsHost }: Props) => (
-  <div>
-    <H2>Teilnehmer</H2>
-    <ul>
-      {participants.map(({ username, id }, index) => (
-        <ListItem key={id}>
-          <LeftCol>
-            <Number>{index + 1}</Number>
-            <Name>{username}</Name>
-          </LeftCol>
-          {currentUserIsHost && (
-            <Actions>
-              <Icon name="delete" />
-            </Actions>
-          )}
-        </ListItem>
-      ))}
-    </ul>
-  </div>
-);
+const Participants = ({ matchId, currentUserIsHost, hostUserId }: Props) => {
+  const { data: matchUsers } = useFetchMatchUsers(matchId);
+
+  return (
+    <div>
+      <H2>Teilnehmer</H2>
+      {!!matchUsers?.length && (
+        <ul>
+          {matchUsers.map(({ username, id }, index) => (
+            <ListItem key={id}>
+              <LeftCol>
+                <Number>{index + 1}</Number>
+                <Name>{username}</Name>
+              </LeftCol>
+              {(currentUserIsHost && id !== hostUserId) && (
+                <Actions>
+                  <Icon name="delete" />
+                </Actions>
+              )}
+            </ListItem>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
 
 export default Participants;

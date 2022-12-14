@@ -8,17 +8,6 @@ import useFetchMatch from '../../hooks/useFetchMatch';
 import useDeleteMatch from '../../hooks/useDeleteMatch';
 import useStartMatch from '../../hooks/useStartMatch';
 
-const participants = [
-  {
-    username: 'User A',
-    id: 1,
-  },
-  {
-    username: 'User A',
-    id: 2,
-  },
-];
-
 const Grid = styled.div`
   display: grid;
   grid-template-rows: 1fr 1fr;
@@ -66,8 +55,9 @@ const MatchLobby = () => {
           </H1>
           <Grid>
             <Participants
-              participants={participants}
               currentUserIsHost={currentUserIsHost}
+              matchId={matchId}
+              hostUserId={match.hostUserId}
             />
             <Settings match={match} />
           </Grid>

@@ -11,38 +11,31 @@ const matchRoutes = (app) => {
   });
   app.post(
     "/api/matches/create",
-    [
-      authJwt.verifyToken,
-      controller.create
-    ],
+    [authJwt.verifyToken, controller.create],
   );
   app.get(
     "/api/matches",
-    [
-      authJwt.verifyToken,
-      controller.getAll
-    ],
+    [authJwt.verifyToken, controller.getAll],
   );
   app.get(
     "/api/matches/:matchId",
-    [
-      authJwt.verifyToken,
-      controller.getOne
-    ],
+    [authJwt.verifyToken, controller.getOne],
   );
   app.delete(
     "/api/matches/:matchId/delete",
-    [
-      authJwt.verifyToken,
-      controller.deleteOne
-    ],
+    [authJwt.verifyToken, controller.deleteOne],
   );
   app.put(
     "/api/matches/:matchId/start",
-    [
-      authJwt.verifyToken,
-      controller.start
-    ],
+    [authJwt.verifyToken, controller.start],
+  );
+  app.post(
+    "/api/matches/:matchId/join",
+    [authJwt.verifyToken, controller.join],
+  );
+  app.get(
+    "/api/matches/:matchId/users",
+    [authJwt.verifyToken, controller.getUsers],
   );
 };
 

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import useJoinMatch from '../hooks/useJoinMatch';
 import { Match } from '../types/types';
 import { Button, Icon } from './common';
 
@@ -29,12 +30,9 @@ const ItemActions = styled.div`
   }
 `;
 
-const joinMatch = (matchId: string) => (
-  Promise.resolve({ data: { id: matchId, success: true } })
-);
-
 const MatchesListItem = ({ match: { title, hasPassword, id } }: { match: Match }) => {
   const navigate = useNavigate();
+  const { joinMatch } = useJoinMatch();
 
   const onJoinMatch = () => {
     let matchPassword;
@@ -48,22 +46,20 @@ const MatchesListItem = ({ match: { title, hasPassword, id } }: { match: Match }
       }
     }
 
-    return joinMatch(id).then(({ data: { success } }) => {
-      if (success) {
-        navigate(`/matches/lobby/${id}`);
-      } else {
-        // TODO: display user notification
-      }
+    return joinMatch(id).then(() => {
+      navigate(`/matches/lobby/${id}`);
     });
   };
+
   return (
     <ItemContainer>
       <MatchTitle title={title}>
         {title}
       </MatchTitle>
       <ItemActions>
-        {hasPassword && <Icon name="lock" />}
-        <Button size="small" onClick={onJoinMatch}>Mitmachen</Button>
+        <Button size="small" onClick={onJoinMatch}>
+          {hasPassword && <Icon name="lock" />}Mitmachen
+        </Button>
       </ItemActions>
     </ItemContainer>
   );
