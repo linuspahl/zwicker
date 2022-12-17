@@ -7,6 +7,7 @@ import Settings from './Settings';
 import useFetchMatch from '../../hooks/useFetchMatch';
 import useDeleteMatch from '../../hooks/useDeleteMatch';
 import useStartMatch from '../../hooks/useStartMatch';
+import useCurrentUser from '../../hooks/useCurrentUser';
 
 const Grid = styled.div`
   display: grid;
@@ -27,7 +28,7 @@ const ActionsRow = styled.div`
 
 const MatchLobby = () => {
   const navigate = useNavigate();
-  const currentUserId = 1;
+  const user = useCurrentUser();
   const { matchId } = useParams();
   const { deleteMatch } = useDeleteMatch();
   const { startMatch } = useStartMatch();
@@ -44,7 +45,7 @@ const MatchLobby = () => {
     navigate(`/matches/table/${matchId}`, { replace: true });
   }
 
-  const currentUserIsHost = currentUserId === match?.hostUserId;
+  const currentUserIsHost = user?.id === match?.hostUserId;
 
   return (
     <PageContainer size="large">

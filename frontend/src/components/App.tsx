@@ -11,6 +11,7 @@ import Login from './Login';
 
 import MatchCreate from './MatchCreate';
 import MatchLobby from './MatchLobby';
+import MatchTable from './MatchTable';
 
 import StartPage from './StartPage';
 import CurrentUserProvider, { CurrentUserContext } from '../contexts/CurrentUserProvider';
@@ -66,7 +67,6 @@ const PageLayout = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0 var(--spacing);
 `;
 
 const Container = styled.div`
@@ -97,6 +97,7 @@ const App = () => {
                           <Route path="/" element={<StartPage />} />
                           <Route path="/matches/create" element={<MatchCreate />} />
                           <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
+                          <Route path="/matches/table/:matchId" element={<MatchTable />} />
                         </Routes>
                       </Router>
                     </>

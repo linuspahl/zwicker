@@ -75,7 +75,7 @@ const join = async ({ userId, params: { matchId } }, res) => {
   });
   
   if (match.status !== 'lobby') {
-    return res.status(400).send({ message: `Match can not be jpined because its status is not "lobby", but "${match.status}"` });  
+    return res.status(400).send({ message: `Match can not be joined because its status is not "lobby", but "${match.status}"` });  
   }
 
   match.addUsers(userId)

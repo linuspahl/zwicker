@@ -1,10 +1,10 @@
 export type User = {
-  id: string,
+  id: number,
   username: string,
 }
 
 export type UserJSON = {
-  id: string,
+  id: number,
   username: string,
 }
 
@@ -24,4 +24,16 @@ export type MatchJSON = {
   has_password: boolean,
   host_user_id: number,
   status: MatchStatus,
+}
+
+export type MatchUser = {
+  id: number,
+  username: string,
+  position: number,
+}
+
+export type Card = {
+  id: string,
+  value: number,
+  alternativeValue: number,
 }

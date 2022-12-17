@@ -4,6 +4,8 @@ import styled, { css } from 'styled-components';
 type Size = 'small' | 'default';
 
 const StyledButton = styled.button<{ $size: Size | undefined }>(({ $size }) => `
+  display: inline-flex;
+  gap: var(--tiny-spacing);
   background-color: white;
   border-radius: 9px;
   padding: var(--small-spacing) var(--spacing);
