@@ -3,12 +3,12 @@ import { MatchUser } from '../types/types';
 import useBackendApi from './useBackendApi';
 
 const useFetchMatchUsers = (matchId: string): {
-    data: Array<MatchUser> | undefined,
-    isFetching: boolean
+  data: Array<MatchUser> | undefined,
+  isFetching: boolean
 } => {
   const { get } = useBackendApi();
-  const fetchMatches = () => get<Array<MatchUser>>(`/api/matches/${matchId}/users`).then(({ data }) => data);
-  const { data, isFetching } = useQuery({ queryKey: ['matches', matchId, 'users'], queryFn: fetchMatches });
+  const fetchMatchUsers = () => get<Array<MatchUser>>(`/api/matches/${matchId}/users`).then(({ data }) => data);
+  const { data, isFetching } = useQuery({ queryKey: ['matches', matchId, 'users'], queryFn: fetchMatchUsers });
   return { data, isFetching };
 };
 

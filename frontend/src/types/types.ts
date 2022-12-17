@@ -1,3 +1,5 @@
+import CardSet from '../card-set';
+
 export type User = {
   id: number,
   username: string,
@@ -24,6 +26,27 @@ export type MatchJSON = {
   has_password: boolean,
   host_user_id: number,
   status: MatchStatus,
+}
+
+export type MatchState = {
+  id: number,
+  boardCards: Array<keyof typeof CardSet>,
+  currentMoveUserId: number,
+  userCards: Array<{
+    userId: number,
+    cards: Array<keyof typeof CardSet>,
+  }>
+}
+
+export type MatchStateJSON = {
+  id: number,
+  cards: Array<string>,
+  current_move_user_id: number,
+  board_cards: Array<keyof typeof CardSet>,
+  userCards: Array<{
+    user_id: number,
+    cards: Array<keyof typeof CardSet>,
+  }>
 }
 
 export type MatchUser = {

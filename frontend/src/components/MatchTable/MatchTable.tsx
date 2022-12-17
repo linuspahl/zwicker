@@ -6,6 +6,7 @@ import MatchBoard from './MatchBoard';
 import UserMatchCards from './UserMatchCards';
 import CardSet from '../../card-set';
 import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
+import useFetchMatchState from '../../hooks/useFetchMatchState';
 
 const Containter = styled.div`
   width: 100vw;
@@ -23,15 +24,10 @@ const MatchTable = () => {
   }
 
   const { data: matchUsers } = useFetchMatchUsers(matchId);
+  const { data: matchState } = useFetchMatchState(matchId);
   const { data: match } = useFetchMatch(matchId);
 
-  const boardCards: Array<{ cardId: keyof typeof CardSet }> = [
-    { cardId: 'seven-clubs' },
-    { cardId: 'six-spades' },
-    { cardId: 'two-hearts' },
-    { cardId: 'king-diamonds' },
-    { cardId: 'queen-diamonds' },
-  ];
+  console.log(matchState);
 
   const userMatchCards: Array<{ cardId: keyof typeof CardSet }> = [
     { cardId: 'six-spades' },
@@ -39,7 +35,7 @@ const MatchTable = () => {
     { cardId: 'king-diamonds' },
   ];
 
-  if (!match || !matchUsers) {
+  if (!match || !matchUsers || !matchState) {
     return <div>spinner</div>;
   }
 
@@ -52,7 +48,7 @@ const MatchTable = () => {
   return (
     <Containter>
       <MatchUsers matchUsers={matchUsers} currentMoveUserId={0} />
-      <MatchBoard cards={boardCards} />
+      <MatchBoard cards={matchState.boardCards.map((card) => ({ cardId: card }))} />
       <UserMatchCards cards={userMatchCards} />
     </Containter>
   );
