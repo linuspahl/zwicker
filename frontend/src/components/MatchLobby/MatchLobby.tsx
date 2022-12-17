@@ -3,21 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useCallback } from 'react';
 import { Button, H1, PageContainer } from '../common';
 import Participants from './Participants';
-import Settings from './Settings';
 import useFetchMatch from '../../hooks/useFetchMatch';
 import useDeleteMatch from '../../hooks/useDeleteMatch';
 import useStartMatch from '../../hooks/useStartMatch';
 import useCurrentUser from '../../hooks/useCurrentUser';
 
-const Grid = styled.div`
-  display: grid;
-  grid-template-rows: 1fr 1fr;
+const Container = styled.div`
   
-  @media only screen and (min-device-width: 480px) {
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 30px;
-  }
 `;
 
 const ActionsRow = styled.div`
@@ -48,20 +40,18 @@ const MatchLobby = () => {
   const currentUserIsHost = user?.id === match?.hostUserId;
 
   return (
-    <PageContainer size="large">
+    <PageContainer>
       {!!match && (
         <>
           <H1>
             Lobby - &quot;{match.title}&quot;
           </H1>
-          <Grid>
+          <Container>
             <Participants
-              currentUserIsHost={currentUserIsHost}
               matchId={matchId}
               hostUserId={match.hostUserId}
             />
-            <Settings match={match} />
-          </Grid>
+          </Container>
         </>
       )}
       <ActionsRow>

@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
 import { ReactComponent as LockSVG } from '../../images/icons/lock.svg';
+import { ReactComponent as StarSVG } from '../../images/icons/star.svg';
 import { ReactComponent as DeleteSVG } from '../../images/icons/delete.svg';
 
 const icons = {
   lock: LockSVG,
   delete: DeleteSVG,
+  star: StarSVG,
 };
 
 const Container = styled.div`

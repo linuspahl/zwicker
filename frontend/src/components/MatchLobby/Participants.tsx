@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import useCurrentUser from '../../hooks/useCurrentUser';
 import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
 import { H2, Icon } from '../common';
 
@@ -17,7 +18,11 @@ const LeftCol = styled.div`
   align-items: center;
 `;
 
-const Name = styled.div``;
+const Name = styled.div`
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+`;
 
 const Actions = styled.div``;
 
@@ -35,14 +40,14 @@ const Number = styled.div`
 `;
 
 type Props = {
-  currentUserIsHost: boolean,
   matchId: string,
   hostUserId: number,
 }
 
-const Participants = ({ matchId, currentUserIsHost, hostUserId }: Props) => {
+const Participants = ({ matchId, hostUserId }: Props) => {
   const { data: matchUsers } = useFetchMatchUsers(matchId);
-
+  const currentUser = useCurrentUser();
+  const currentUserIsHost = currentUser?.id === hostUserId;
   return (
     <div>
       <H2>Teilnehmer</H2>
@@ -52,7 +57,9 @@ const Participants = ({ matchId, currentUserIsHost, hostUserId }: Props) => {
             <ListItem key={id}>
               <LeftCol>
                 <Number>{index + 1}</Number>
-                <Name>{username}</Name>
+                <Name>
+                  {id === currentUser?.id && <Icon name="star" />}{username}
+                </Name>
               </LeftCol>
               {(currentUserIsHost && id !== hostUserId) && (
                 <Actions>
