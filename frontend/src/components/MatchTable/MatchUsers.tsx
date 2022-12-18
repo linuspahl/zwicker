@@ -19,7 +19,7 @@ const MatchUsers = ({
   <Container>
     {matchUsers.sort(
       (matchUser1, matchUser2) => (matchUser1.position - matchUser2.position),
-    ).map(({ position, username, id }) => (
+    ).map(({ position, user: { username }, id }) => (
       <MatchUser
         key={id}
         position={position}

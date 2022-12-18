@@ -1,9 +1,9 @@
-const userModel = (sequelize, Sequelize) => sequelize.define(
+const matchModel = (sequelize, Sequelize) => sequelize.define(
   "matches",
   {
-    host_user_id: {
+    hostUserId: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     title: {
       type: Sequelize.STRING,
@@ -18,4 +18,4 @@ const userModel = (sequelize, Sequelize) => sequelize.define(
   }
 );
 
-export default userModel;
+export default matchModel;

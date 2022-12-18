@@ -4,14 +4,11 @@ import { MatchState, MatchStateJSON } from '../types/types';
 export const fromJSON = ({
   id,
   userCards = [],
-  board_cards: boardCards,
-  current_move_user_id: currentMoveUserId,
+  boardCards,
+  currentMoveUserId,
 }: MatchStateJSON): MatchState => ({
   id,
   currentMoveUserId,
   boardCards,
-  userCards: userCards.map(({ user_id: userId, cards }) => ({
-    userId,
-    cards,
-  })),
+  userCards,
 });

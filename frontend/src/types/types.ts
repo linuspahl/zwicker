@@ -23,8 +23,8 @@ export type Match = {
 export type MatchJSON = {
   title: string,
   id: string,
-  has_password: boolean,
-  host_user_id: number,
+  hasPassword: boolean,
+  hostUserId: number,
   status: MatchStatus,
 }
 
@@ -41,18 +41,20 @@ export type MatchState = {
 export type MatchStateJSON = {
   id: number,
   cards: Array<string>,
-  current_move_user_id: number,
-  board_cards: Array<keyof typeof CardSet>,
+  currentMoveUserId: number,
+  boardCards: Array<keyof typeof CardSet>,
   userCards: Array<{
-    user_id: number,
+    userId: number,
     cards: Array<keyof typeof CardSet>,
   }>
 }
 
 export type MatchUser = {
   id: number,
-  username: string,
   position: number,
+  user: {
+    username: string,
+  }
 }
 
 export type Card = {

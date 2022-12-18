@@ -2,25 +2,28 @@ import db from '../models';
 import bcrypt from 'bcryptjs';
 
 const Match = db.match;
+const MatchState = db.matchState;
+const MatchStateUser = db.matchStateUser;
 
 const formatMatch = (match) => ({
   id: match.id,
   title: match.title,
-  has_password: !!match.password,
+  hasPassword: !!match.password,
   status: match.status
 })
 
 const create = async ({ userId, body: { title, password } }, res) => {
   const match = await Match.create({
-    host_user_id: userId,
+    userId,
     title,
     status: 'lobby',
+    hostUserId: userId,
     password: password ? bcrypt.hashSync(password, 8) : null,
   }).catch(err => {
     res.status(500).send({ message: err.message });
   });
 
-  await match.addUsers(userId)
+  await match.createMatchUser({ userId, position: 1 })
 
   return res.send({ message: "Match was created successfully!", match: formatMatch(match) });
 };
@@ -46,11 +49,36 @@ const getUsers = async ({ params: { matchId }}, res) => {
     res.status(500).send({ message: err.message });
   });
 
-  return match.getUsers().then((users) => {
-    res.status(200).send(users.map(({ id, username }) => ({ id, username })));
+  return match.getMatchUsers({
+    include: { 
+      model: db.user,
+      attributes: [ 'username' ]
+    },
+  }).then((matchUsers) => {
+    res.status(200).send(matchUsers)
   }).catch(err => {
     res.status(500).send({ message: err.message });
   });
+}
+
+const getState = async ({ params: { matchId }}, res) => {
+  const matchState = await MatchState.findOne({
+    where: {
+      matchId
+    }
+  }).catch(err => {
+    res.status(500).send({ message: err.message });
+  });
+  
+  const matchUsers = await matchState.getMatchStateUsers();
+  
+  return res.status(200).send({
+    id: matchState.id,
+    boardCards: matchState.boardCards,
+    createdAt: matchState.createdAt,
+    updatedAt: matchState.updatedAt,
+    matchUsers,
+  });    
 }
 
 const start = async ({ params: { matchId } }, res) => {
@@ -60,6 +88,22 @@ const start = async ({ params: { matchId } }, res) => {
   
   if (match.status !== 'lobby') {
     return res.status(400).send({ message: `Match can not started because its status is not "lobby", but "${match.status}"` });  
+  }
+  const matchUsers = await match.getMatchUsers();
+
+  const matchState = await MatchState.create({
+    matchId: match.id,
+    // current_move_user_id: matchUsers.reduce((prev, curr) => prev.position < curr.position ? prev : curr).id,
+    currentMoveUseId: matchUsers[0].id,
+    boardCards: ['six-spades', 'two-hearts', 'king-diamonds']
+  });
+
+  for (const matchUser of matchUsers) {
+    await MatchStateUser.create({
+      matchStateId: matchState.id,
+      userId: matchUser.userId,
+      card: ['six-spades', 'two-hearts'],
+    })
   }
 
   match.status = 'running';
@@ -78,7 +122,8 @@ const join = async ({ userId, params: { matchId } }, res) => {
     return res.status(400).send({ message: `Match can not be joined because its status is not "lobby", but "${match.status}"` });  
   }
 
-  match.addUsers(userId)
+  const matchUsers = await match.getMatchUsers();
+  await match.addMatchUsers({ userId: userId, position: (matchUsers?.length ?? 0) + 1 })
   await match.save();
   
   return res.status(200).send(match);
@@ -89,7 +134,7 @@ const deleteOne = async ({ userId, params: { matchId } }, res) => {
     res.status(500).send({ message: err.message });
   });
   
-  if (match.host_user_id !== userId) {
+  if (match.userId !== userId) {
     return res.status(400).send({ message: 'Match can not be deleted because you are not the host' });  
   }
 
@@ -106,4 +151,5 @@ export default {
   deleteOne,
   join,
   getUsers,
+  getState,
 }

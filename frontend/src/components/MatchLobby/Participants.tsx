@@ -53,7 +53,7 @@ const Participants = ({ matchId, hostUserId }: Props) => {
       <H2>Teilnehmer</H2>
       {!!matchUsers?.length && (
         <ul>
-          {matchUsers.map(({ username, id }, index) => (
+          {matchUsers.map(({ user: { username }, id }, index) => (
             <ListItem key={id}>
               <LeftCol>
                 <Number>{index + 1}</Number>

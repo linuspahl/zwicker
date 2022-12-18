@@ -3,8 +3,8 @@ import { Match, MatchJSON } from '../types/types';
 export const fromJSON = ({
   id,
   title,
-  has_password: hasPassword,
-  host_user_id: hostUserId,
+  hasPassword,
+  hostUserId,
   status,
 }: MatchJSON): Match => ({
   id,
@@ -23,7 +23,7 @@ export const toJSON = ({
 }: Match): MatchJSON => ({
   id,
   title,
-  has_password: hasPassword,
-  host_user_id: hostUserId,
+  hasPassword,
+  hostUserId,
   status,
 });

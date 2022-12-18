@@ -37,6 +37,10 @@ const matchRoutes = (app) => {
     "/api/matches/:matchId/users",
     [authJwt.verifyToken, controller.getUsers],
   );
+  app.get(
+    "/api/matches/:matchId/state",
+    [authJwt.verifyToken, controller.getState],
+  );
 };
 
 export default matchRoutes

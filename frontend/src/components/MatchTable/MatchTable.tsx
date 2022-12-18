@@ -27,8 +27,6 @@ const MatchTable = () => {
   const { data: matchState } = useFetchMatchState(matchId);
   const { data: match } = useFetchMatch(matchId);
 
-  console.log(matchState);
-
   const userMatchCards: Array<{ cardId: keyof typeof CardSet }> = [
     { cardId: 'six-spades' },
     { cardId: 'two-hearts' },
