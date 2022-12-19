@@ -1,9 +1,16 @@
 import db from '../models';
 import bcrypt from 'bcryptjs';
+import cardSet from '../card-set'
 
 const Match = db.match;
 const MatchState = db.matchState;
 const MatchStateUser = db.matchStateUser;
+
+const getMultipleRandom = (arr, num) => {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+
+  return shuffled.slice(0, num);
+}
 
 const formatMatch = (match) => ({
   id: match.id,
@@ -62,26 +69,24 @@ const getUsers = async ({ params: { matchId }}, res) => {
 }
 
 const getState = async ({ params: { matchId }}, res) => {
-  const matchState = await MatchState.findOne({
+  return MatchState.findOne({
+    include: { 
+      model: db.matchStateUser,
+    },
     where: {
       matchId
     }
+  }).then((matchState) => {
+    return res.status(200).send(matchState);    
   }).catch(err => {
     res.status(500).send({ message: err.message });
   });
-  
-  const matchUsers = await matchState.getMatchStateUsers();
-  
-  return res.status(200).send({
-    id: matchState.id,
-    boardCards: matchState.boardCards,
-    createdAt: matchState.createdAt,
-    updatedAt: matchState.updatedAt,
-    matchUsers,
-  });    
+
 }
 
 const start = async ({ params: { matchId } }, res) => {
+  let unplayedCards = Object.keys(cardSet);
+  
   const match = await Match.findByPk(matchId).catch(err => {
     res.status(500).send({ message: err.message });
   });
@@ -90,19 +95,35 @@ const start = async ({ params: { matchId } }, res) => {
     return res.status(400).send({ message: `Match can not started because its status is not "lobby", but "${match.status}"` });  
   }
   const matchUsers = await match.getMatchUsers();
+  const matchUserCards = matchUsers.map(() => {
+    const userCards = getMultipleRandom(unplayedCards, 4);
+    console.log({ userCards, unplayedCards });
+    unplayedCards = unplayedCards.filter(item => !userCards.includes(item));
+    return userCards
+  });
+
+  const boardCards = getMultipleRandom(unplayedCards, 4);
+  unplayedCards = unplayedCards.filter(item => !boardCards.includes(item))
+
+  console.log({
+    boardCards,
+    unplayedCards,
+    matchUserCards
+  })
 
   const matchState = await MatchState.create({
     matchId: match.id,
-    // current_move_user_id: matchUsers.reduce((prev, curr) => prev.position < curr.position ? prev : curr).id,
     currentMoveUseId: matchUsers[0].id,
-    boardCards: ['six-spades', 'two-hearts', 'king-diamonds']
+    unplayedCards,
+    boardCards,
   });
 
-  for (const matchUser of matchUsers) {
+  console.log('entries', matchUsers.entries())
+  for (const [index, matchUser] of matchUsers.entries()) {
     await MatchStateUser.create({
       matchStateId: matchState.id,
       userId: matchUser.userId,
-      card: ['six-spades', 'two-hearts'],
+      cards: matchUserCards[index],
     })
   }
 

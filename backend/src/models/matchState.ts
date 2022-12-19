@@ -4,8 +4,11 @@ const matchStateModel = (sequelize, Sequelize) => sequelize.define(
     currentMoveUserId: {
       type: Sequelize.INTEGER
     },
+    unplayedCards: {
+      type: Sequelize.ARRAY(Sequelize.STRING),
+    },
     boardCards: {
-      type: Sequelize.ARRAY(Sequelize.STRING)      ,
+      type: Sequelize.ARRAY(Sequelize.STRING),
     },
   }
 );

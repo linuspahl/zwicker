@@ -4,9 +4,9 @@ import useFetchMatch from '../../hooks/useFetchMatch';
 import MatchUsers from './MatchUsers';
 import MatchBoard from './MatchBoard';
 import UserMatchCards from './UserMatchCards';
-import CardSet from '../../card-set';
 import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
 import useFetchMatchState from '../../hooks/useFetchMatchState';
+import useCurrentUser from '../../hooks/useCurrentUser';
 
 const Containter = styled.div`
   width: 100vw;
@@ -18,6 +18,7 @@ const Containter = styled.div`
 
 const MatchTable = () => {
   const { matchId } = useParams();
+  const currentUser = useCurrentUser();
 
   if (!matchId) {
     throw Error('Missing matchId.');
@@ -27,15 +28,12 @@ const MatchTable = () => {
   const { data: matchState } = useFetchMatchState(matchId);
   const { data: match } = useFetchMatch(matchId);
 
-  const userMatchCards: Array<{ cardId: keyof typeof CardSet }> = [
-    { cardId: 'six-spades' },
-    { cardId: 'two-hearts' },
-    { cardId: 'king-diamonds' },
-  ];
-
-  if (!match || !matchUsers || !matchState) {
+  if (!match || !matchUsers || !matchState || !currentUser) {
     return <div>spinner</div>;
   }
+  const userMatchCards = matchState.matchStateUsers.find(
+    ({ userId }) => userId === currentUser.id,
+  )?.cards ?? [];
 
   //   const { data: matchUser } = useFetchMatchUser(matchId);
 
@@ -47,7 +45,7 @@ const MatchTable = () => {
     <Containter>
       <MatchUsers matchUsers={matchUsers} currentMoveUserId={0} />
       <MatchBoard cards={matchState.boardCards.map((card) => ({ cardId: card }))} />
-      <UserMatchCards cards={userMatchCards} />
+      <UserMatchCards cards={userMatchCards.map((card) => ({ cardId: card }))} />
     </Containter>
   );
 };
