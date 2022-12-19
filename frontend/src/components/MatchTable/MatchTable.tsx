@@ -43,7 +43,7 @@ const MatchTable = () => {
 
   return (
     <Containter>
-      <MatchUsers matchUsers={matchUsers} currentMoveUserId={0} />
+      <MatchUsers matchUsers={matchUsers} currentMoveUserId={matchState.currentMoveUserId} />
       <MatchBoard cards={matchState.boardCards.map((card) => ({ cardId: card }))} />
       <UserMatchCards cards={userMatchCards.map((card) => ({ cardId: card }))} />
     </Containter>

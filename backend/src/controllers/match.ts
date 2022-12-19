@@ -97,7 +97,6 @@ const start = async ({ params: { matchId } }, res) => {
   const matchUsers = await match.getMatchUsers();
   const matchUserCards = matchUsers.map(() => {
     const userCards = getMultipleRandom(unplayedCards, 4);
-    console.log({ userCards, unplayedCards });
     unplayedCards = unplayedCards.filter(item => !userCards.includes(item));
     return userCards
   });
@@ -105,20 +104,13 @@ const start = async ({ params: { matchId } }, res) => {
   const boardCards = getMultipleRandom(unplayedCards, 4);
   unplayedCards = unplayedCards.filter(item => !boardCards.includes(item))
 
-  console.log({
-    boardCards,
-    unplayedCards,
-    matchUserCards
-  })
-
   const matchState = await MatchState.create({
     matchId: match.id,
-    currentMoveUseId: matchUsers[0].id,
+    currentMoveUserId: matchUsers[0].userId,
     unplayedCards,
     boardCards,
   });
 
-  console.log('entries', matchUsers.entries())
   for (const [index, matchUser] of matchUsers.entries()) {
     await MatchStateUser.create({
       matchStateId: matchState.id,

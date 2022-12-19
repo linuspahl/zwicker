@@ -52,6 +52,7 @@ export type MatchStateJSON = {
 export type MatchUser = {
   id: number,
   position: number,
+  userId: number,
   user: {
     username: string,
   }
