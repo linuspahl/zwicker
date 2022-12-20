@@ -136,7 +136,7 @@ const join = async ({ userId, params: { matchId } }, res) => {
   }
 
   const matchUsers = await match.getMatchUsers();
-  await match.addMatchUsers({ userId: userId, position: (matchUsers?.length ?? 0) + 1 })
+  await match.createMatchUser({ userId, position: (matchUsers?.length ?? 0) + 1 })
   await match.save();
   
   return res.status(200).send(match);
