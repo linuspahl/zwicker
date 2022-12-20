@@ -142,6 +142,43 @@ const join = async ({ userId, params: { matchId } }, res) => {
   return res.status(200).send(match);
 }
 
+const move = async ({ userId, body: {
+  matchId,
+  type,
+  sourceCardId,
+  targetCardId
+}}, res) => {
+  const match = await Match.findByPk(matchId).catch();
+  
+  const matchState = await MatchState.findOne({
+    include: { 
+      model: db.matchStateUser,
+    },
+    where: {
+      matchId
+    }
+  })
+
+  const matchUsers = await match.getMatchUsers()
+  const matchUserIndex = matchUsers.findIndex(({ userId: matchUserId }) => matchUserId === userId)
+  const matchStateUsers = await matchState.getMatchStateUsers()
+  const matchStateUser = matchStateUsers.find(({ userId: matchStateUserId }) => matchStateUserId === userId)
+  const sortedMatchUsers = matchUsers.sort((a, b) => a.position - b.position)
+
+  const nextMatchUser = matchUserIndex + 1 === sortedMatchUsers.length ? sortedMatchUsers[0] : sortedMatchUsers[matchUserIndex + 1]
+
+  if (type === 'dropping') {
+    // TODO: check if user is able to perform move
+    matchStateUser.cards = matchStateUser.cards.filter(card => card !== sourceCardId)
+    matchState.boardCards = [...matchState.boardCards, sourceCardId];
+    matchState.currentMoveUserId = nextMatchUser.userId;
+
+    await matchStateUser.save();
+    await matchState.save();
+  }
+  return res.status(200).send();
+}
+
 const deleteOne = async ({ userId, params: { matchId } }, res) => {
   const match = await Match.findByPk(matchId).catch(err => {
     res.status(500).send({ message: err.message });
@@ -163,6 +200,7 @@ export default {
   getOne,
   deleteOne,
   join,
+  move,
   getUsers,
   getState,
 }

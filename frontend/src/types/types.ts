@@ -14,7 +14,7 @@ type MatchStatus = 'running' | 'lobby' | 'ended'
 
 export type Match = {
   title: string,
-  id: string,
+  id: number,
   hasPassword: boolean,
   hostUserId: number,
   status: MatchStatus,
@@ -22,7 +22,7 @@ export type Match = {
 
 export type MatchJSON = {
   title: string,
-  id: string,
+  id: number,
   hasPassword: boolean,
   hostUserId: number,
   status: MatchStatus,

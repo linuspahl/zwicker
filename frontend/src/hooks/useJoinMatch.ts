@@ -4,7 +4,7 @@ import useBackendApi from './useBackendApi';
 const useJoinMatch = () => {
   const [isJoining, setIsJoining] = useState(false);
   const { post } = useBackendApi();
-  const joinMatch = (matchId: string) => {
+  const joinMatch = (matchId: number) => {
     setIsJoining(true);
     return post(`/api/matches/${matchId}/join`).finally(() => {
       setIsJoining(false);

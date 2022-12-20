@@ -1,7 +1,7 @@
-import React, { MouseEventHandler, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import CardSet from '../../card-set';
 import useCurrentMove from '../../hooks/useCurrentMove';
+import useMatchMove from '../../hooks/useMatchMove';
 import { CurrentMove } from '../../types/types';
 import Card from './Card';
 import CardsList from './CardsList';
@@ -39,11 +39,18 @@ const Option = styled.div`
   }
 `;
 
-const Overlay = () => {
-  const { setCurrentMove } = useCurrentMove();
+const Overlay = ({ matchId }: { matchId: number }) => {
+  const { setCurrentMove, currentMove } = useCurrentMove();
+  const { submitMove } = useMatchMove();
 
   const onClick = (type: CurrentMove['type']) => (event: { stopPropagation: () => void; }) => {
     event.stopPropagation();
+
+    if (type === 'dropping') {
+      if (currentMove?.sourceCardId) {
+        submitMove(matchId, type, currentMove.sourceCardId, currentMove?.targetCardId);
+      }
+    }
 
     setCurrentMove((cur = {}) => ({
       sourceCardId: cur.sourceCardId,
@@ -63,18 +70,20 @@ const Overlay = () => {
 type Props = {
   cards: Array<{ cardId: keyof typeof CardSet }>;
   isCurrentMove: boolean,
+  matchId: number,
 }
 
-const UserMatchCards = ({ cards, isCurrentMove }: Props) => {
+const UserMatchCards = ({ cards, isCurrentMove, matchId }: Props) => {
   const { setCurrentMove, currentMove } = useCurrentMove();
 
   return (
     <Container>
-      <CardsList hasFocus={!currentMove?.sourceCardId}>
+      <CardsList hasFocus={isCurrentMove && !currentMove?.sourceCardId}>
         {cards.map((({ cardId }) => {
-          const displayCardOverlay = isCurrentMove && currentMove?.sourceCardId === cardId
-
-          && currentMove?.type !== 'picking' && currentMove?.type !== 'dropping';
+          const displayCardOverlay = isCurrentMove
+          && currentMove?.sourceCardId === cardId
+          && currentMove?.type !== 'picking'
+          && currentMove?.type !== 'dropping';
 
           return (
             <Card
@@ -82,7 +91,7 @@ const UserMatchCards = ({ cards, isCurrentMove }: Props) => {
               onClick={() => setCurrentMove({ sourceCardId: cardId })}
               key={cardId}
               overlay={displayCardOverlay
-                ? <Overlay />
+                ? <Overlay matchId={matchId} />
                 : undefined}
             />
           );

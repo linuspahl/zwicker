@@ -41,6 +41,10 @@ const matchRoutes = (app) => {
     "/api/matches/:matchId/state",
     [authJwt.verifyToken, controller.getState],
   );
+  app.post(
+    "/api/matches/:matchId/move",
+    [authJwt.verifyToken, controller.move],
+  );
 };
 
 export default matchRoutes

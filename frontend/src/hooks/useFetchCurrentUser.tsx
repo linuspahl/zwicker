@@ -13,6 +13,8 @@ const useFetchCurrentUser = () => {
     queryFn: fetchUser,
     enabled: !!accessToken,
     retry: false,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
   });
 
   return { data, isFetching };

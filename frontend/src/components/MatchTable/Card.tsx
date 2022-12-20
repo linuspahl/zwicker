@@ -11,7 +11,7 @@ const CardContainer = styled.div`
   cursor: pointer;
 
   :not(:last-of-type) {
-    margin-right: 1%;
+    margin-right: clamp(3px, 1vw, 6px);
   }
 
   svg {

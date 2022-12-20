@@ -50,6 +50,7 @@ const MatchTable = () => {
         isCurrentMove={matchState.currentMoveUserId === currentUser.id}
       />
       <UserMatchCards
+        matchId={match.id}
         cards={userMatchCards.map((card) => ({ cardId: card }))}
         isCurrentMove={matchState.currentMoveUserId === currentUser.id}
       />
