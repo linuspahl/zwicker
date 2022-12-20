@@ -7,6 +7,7 @@ import UserMatchCards from './UserMatchCards';
 import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
 import useFetchMatchState from '../../hooks/useFetchMatchState';
 import useCurrentUser from '../../hooks/useCurrentUser';
+import CurrentMoveProvider from '../../contexts/CurrentMoveProvider';
 
 const Containter = styled.div`
   width: 100vw;
@@ -44,10 +45,22 @@ const MatchTable = () => {
   return (
     <Containter>
       <MatchUsers matchUsers={matchUsers} currentMoveUserId={matchState.currentMoveUserId} />
-      <MatchBoard cards={matchState.boardCards.map((card) => ({ cardId: card }))} />
-      <UserMatchCards cards={userMatchCards.map((card) => ({ cardId: card }))} />
+      <MatchBoard
+        cards={matchState.boardCards.map((card) => ({ cardId: card }))}
+        isCurrentMove={matchState.currentMoveUserId === currentUser.id}
+      />
+      <UserMatchCards
+        cards={userMatchCards.map((card) => ({ cardId: card }))}
+        isCurrentMove={matchState.currentMoveUserId === currentUser.id}
+      />
     </Containter>
   );
 };
 
-export default MatchTable;
+const MatchTableWrapper = () => (
+  <CurrentMoveProvider>
+    <MatchTable />
+  </CurrentMoveProvider>
+);
+
+export default MatchTableWrapper;

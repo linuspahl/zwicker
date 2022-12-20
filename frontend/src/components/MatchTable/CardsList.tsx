@@ -1,6 +1,4 @@
-import styled from 'styled-components';
-import CardSet from '../../card-set';
-import Card from './Card';
+import styled, { css } from 'styled-components';
 
 const Container = styled.div`
   overflow-x: auto;
@@ -9,20 +7,30 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const InnerContainer = styled.div`
+const InnerContainer = styled.div(({ $hasFocus }: { $hasFocus: boolean }) => css`
   display: flex;
   overflow-x: scroll;
+  padding: var(--tiny-spacing);
+  border: 6px solid ${$hasFocus ? 'yellow' : 'transparent'};
+`);
 
-  padding-left: var(--tiny-spacing);
-  padding-right: var(--tiny-spacing);
-`;
+type Props = {
+  children: React.ReactNode,
+  className?: string,
+  hasFocus?: boolean,
+}
 
-const CardList = ({ cards }: { cards: Array<{ cardId: keyof typeof CardSet }> }) => (
-  <Container>
-    <InnerContainer>
-      {cards.map((({ cardId }) => <Card cardId={cardId} key={cardId} />))}
+const CardList = ({ children, className, hasFocus }: Props) => (
+  <Container className={className}>
+    <InnerContainer $hasFocus={!!hasFocus}>
+      {children}
     </InnerContainer>
   </Container>
 );
+
+CardList.defaultProps = {
+  className: undefined,
+  hasFocus: false,
+};
 
 export default CardList;

@@ -63,3 +63,9 @@ export type Card = {
   value: number,
   alternativeValue: number,
 }
+
+export type CurrentMove = {
+  sourceCardId?: keyof typeof CardSet,
+  targetCardId?: keyof typeof CardSet,
+  type?: 'dropping' | 'building' | 'picking',
+}

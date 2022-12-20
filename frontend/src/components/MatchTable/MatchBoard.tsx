@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 import CardSet from '../../card-set';
+import useCurrentMove from '../../hooks/useCurrentMove';
+import Card from './Card';
 import CardList from './CardsList';
 
 const Containter = styled.div`
@@ -11,10 +13,19 @@ const Containter = styled.div`
   flex: 1;
 `;
 
-const MatchBoard = ({ cards }: { cards: Array<{ cardId: keyof typeof CardSet }> }) => (
-  <Containter>
-    <CardList cards={cards} />
-  </Containter>
-);
+const MatchBoard = ({ cards, isCurrentMove }: {
+  cards: Array<{ cardId: keyof typeof CardSet }>,
+  isCurrentMove: boolean,
+}) => {
+  const { currentMove } = useCurrentMove();
+  const hasFocus = isCurrentMove && (currentMove?.type === 'picking' || currentMove?.type === 'building');
+  return (
+    <Containter>
+      <CardList hasFocus={hasFocus}>
+        {cards.map((({ cardId }) => <Card cardId={cardId} key={cardId} />))}
+      </CardList>
+    </Containter>
+  );
+};
 
 export default MatchBoard;
