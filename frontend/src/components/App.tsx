@@ -71,7 +71,9 @@ const PageLayout = styled.div`
 
 const Container = styled.div`
   height: 100%;
-  background-image: linear-gradient(to right bottom, #0963af, #0860a9, #075ca4, #06599e, #055699);
+  background-image: url('/bg.jpeg');
+  background-position: 50% 50%;
+  background-size: cover;
 `;
 
 const App = () => {
