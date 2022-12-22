@@ -3,6 +3,7 @@ import CardSet from '../../card-set';
 import useCurrentMove from '../../hooks/useCurrentMove';
 import useMatchMove from '../../hooks/useMatchMove';
 import { CurrentMove } from '../../types/types';
+import getCard from '../../utils/getCard';
 import Card from './Card';
 import CardsList from './CardsList';
 
@@ -14,7 +15,7 @@ const Container = styled.div`
   padding-bottom: var(--spacing);
 `;
 
-const MoveOptions = styled.div`
+const Options = styled.div`
   height: 100%;
   width: 100%;
   position: absolute;
@@ -39,7 +40,7 @@ const Option = styled.div`
   }
 `;
 
-const Overlay = ({ matchId }: { matchId: number }) => {
+const MoveOptions = ({ matchId, cardId }: { matchId: number, cardId: keyof typeof CardSet }) => {
   const { setCurrentMove, currentMove } = useCurrentMove();
   const { submitMove } = useMatchMove();
 
@@ -48,25 +49,83 @@ const Overlay = ({ matchId }: { matchId: number }) => {
 
     if (type === 'dropping') {
       if (currentMove?.sourceCardId) {
-        submitMove(matchId, type, currentMove.sourceCardId, currentMove?.targetCardId).then(() => {
+        return submitMove({
+          matchId,
+          type,
+          sourceCardId: currentMove.sourceCardId,
+          targetCardId: currentMove?.targetCardId,
+        }).then(() => {
           setCurrentMove(undefined);
         });
       }
-    } else {
-      setCurrentMove((cur = {}) => ({
+    }
+
+    if (type === 'building') {
+      const { value, alternativeValue } = getCard(cardId);
+      return setCurrentMove((cur = {}) => ({
         sourceCardId: cur.sourceCardId,
+        sourceCardValue: alternativeValue ? undefined : value,
         type,
       }));
     }
+
+    return setCurrentMove((cur = {}) => ({
+      sourceCardId: cur.sourceCardId,
+      type,
+    }));
   };
 
   return (
-    <MoveOptions>
+    <Options>
       <Option onClick={onClick('picking')}>Nehmen</Option>
       <Option onClick={onClick('building')}>Bauen</Option>
       <Option onClick={onClick('dropping')}>Ablegen</Option>
-    </MoveOptions>
+    </Options>
   );
+};
+
+const BuildOptions = ({ cardId }: { cardId: keyof typeof CardSet }) => {
+  const { setCurrentMove } = useCurrentMove();
+
+  const onClick = (selectedValue: number) => (event: { stopPropagation: () => void; }) => {
+    event.stopPropagation();
+    setCurrentMove((cur = {}) => ({
+      sourceCardId: cur.sourceCardId,
+      type: cur.type,
+      sourceCardValue: selectedValue,
+    }));
+  };
+
+  const { value, alternativeValue } = getCard(cardId);
+
+  return (
+    <Options>
+      <Option onClick={onClick(value)}>{value}</Option>
+      {alternativeValue && <Option onClick={onClick(alternativeValue)}>{alternativeValue}</Option>}
+    </Options>
+  );
+};
+
+const cardOverlay = (
+  isCurrentMove: boolean,
+  currentMove: CurrentMove | undefined,
+  matchId: number,
+  cardId: keyof typeof CardSet,
+) => {
+  if (isCurrentMove
+    && currentMove?.sourceCardId === cardId
+    && !currentMove?.type) {
+    return <MoveOptions matchId={matchId} cardId={cardId} />;
+  }
+
+  if (isCurrentMove
+    && currentMove?.sourceCardId === cardId
+    && currentMove?.type === 'building'
+    && currentMove?.sourceCardValue === undefined) {
+    return <BuildOptions cardId={cardId} />;
+  }
+
+  return undefined;
 };
 
 type Props = {
@@ -83,14 +142,10 @@ const UserMatchCards = ({ cards, isCurrentMove, matchId }: Props) => {
     <Container>
       <CardsList hasFocus={isCurrentMove && !currentMove?.sourceCardId}>
         {cards.map((({ cardId }) => {
-          const displayCardOverlay = isCurrentMove
-            && currentMove?.sourceCardId === cardId
-            && currentMove?.type !== 'picking'
-            && currentMove?.type !== 'dropping';
-
           const cardIsSelected = isCurrentMove
-            && currentMove?.sourceCardId === cardId
-            && (currentMove?.type === 'picking' || currentMove?.type === 'building');
+          && currentMove?.sourceCardId === cardId
+          && (currentMove?.type === 'picking' || currentMove?.type === 'building');
+          const overlay = cardOverlay(isCurrentMove, currentMove, matchId, String(cardId));
 
           return (
             <Card
@@ -98,9 +153,7 @@ const UserMatchCards = ({ cards, isCurrentMove, matchId }: Props) => {
               cardId={cardId}
               onClick={() => setCurrentMove({ sourceCardId: cardId })}
               key={cardId}
-              overlay={displayCardOverlay
-                ? <Overlay matchId={matchId} />
-                : undefined}
+              overlay={overlay}
             />
           );
         }))}

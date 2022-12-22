@@ -59,13 +59,14 @@ export type MatchUser = {
 }
 
 export type Card = {
-  id: string,
   value: number,
-  alternativeValue: number,
+  image: React.FunctionComponent,
+  alternativeValue?: number,
 }
 
 export type CurrentMove = {
   sourceCardId?: keyof typeof CardSet,
+  sourceCardValue?: number,
   targetCardId?: keyof typeof CardSet,
   type?: 'dropping' | 'building' | 'picking',
 }

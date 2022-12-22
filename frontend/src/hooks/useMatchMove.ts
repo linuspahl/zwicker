@@ -10,10 +10,19 @@ const useMatchMove = () => {
   const queryClient = useQueryClient();
 
   const submitMove = (
+    {
+      matchId,
+      type,
+      sourceCardId,
+      sourceCardValue,
+      targetCardId,
+    }:{
     matchId: number,
     type: CurrentMove['type'],
     sourceCardId: keyof typeof CardSet | undefined,
+    sourceCardValue?: number,
     targetCardId?: keyof typeof CardSet,
+  },
   ) => {
     setIsSubmittingMove(true);
 
@@ -21,6 +30,7 @@ const useMatchMove = () => {
       matchId,
       type,
       sourceCardId,
+      sourceCardValue,
       targetCardId,
     }).then(() => {
       queryClient.invalidateQueries(['matches', matchId, 'state']);

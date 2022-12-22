@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
-import cards from '../../card-set';
+import cards, { jockerCards } from '../../card-set';
+import getCard from '../../utils/getCard';
 
 const CardContainer = styled.div(({ $isSelected }: { $isSelected: boolean }) => css`
   position: relative;
@@ -22,6 +23,17 @@ const CardContainer = styled.div(({ $isSelected }: { $isSelected: boolean }) => 
   }
 `);
 
+const JokerValue = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 17%;
+  top: 2%;
+  line-height: 1;
+  font-size: 36px;
+`;
+
 const Card = ({
   cardId,
   className,
@@ -35,16 +47,13 @@ const Card = ({
   onClick?: () => void,
   isSelected?: boolean
 }) => {
-  const card = cards[cardId];
+  const { image: Image, value } = getCard(cardId);
 
-  if (!card) {
-    throw Error(`card image not defined for card ${cardId}`);
-  }
-
-  const { image: Image } = card;
+  const isJoker = jockerCards.includes(cardId);
 
   return (
     <CardContainer className={className} onClick={onClick} $isSelected={!!isSelected}>
+      {isJoker && <JokerValue>{value}</JokerValue>}
       {overlay}
       <Image />
     </CardContainer>

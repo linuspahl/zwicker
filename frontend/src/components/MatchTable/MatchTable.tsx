@@ -44,6 +44,7 @@ const MatchTable = () => {
     <Containter>
       <MatchUsers matchUsers={matchUsers} currentMoveUserId={matchState.currentMoveUserId} />
       <MatchBoard
+        matchId={match.id}
         cards={matchState.boardCards.map((card) => ({ cardId: card }))}
         isCurrentMove={matchState.currentMoveUserId === currentUser.id}
       />

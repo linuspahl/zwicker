@@ -1,3 +1,4 @@
+
 import { ReactComponent as AceClubs } from './images/cards/ace-clubs.svg';
 import { ReactComponent as AceDiamonds } from './images/cards/ace-diamonds.svg';
 import { ReactComponent as AceHearts } from './images/cards/ace-hearts.svg';
@@ -46,6 +47,8 @@ import { ReactComponent as KingClubs } from './images/cards/king-clubs.svg';
 import { ReactComponent as KingDiamonds } from './images/cards/king-diamonds.svg';
 import { ReactComponent as KingHearts } from './images/cards/king-hearts.svg';
 import { ReactComponent as KingSpades } from './images/cards/king-spades.svg';
+import { ReactComponent as Joker } from './images/cards/joker.svg';
+import { Card } from './types/types';
 
 const cardBase = {
   ace: { value: 11, alternativeValue: 1 },
@@ -63,7 +66,7 @@ const cardBase = {
   king: { value: 14, alternativeValue: 4 },
 };
 
-const cards = {
+const cards: { [cardId: string]: Card } = {
   'ace-clubs': { ...cardBase.ace, image: AceClubs },
   'ace-diamonds': { ...cardBase.ace, image: AceDiamonds },
   'ace-hearts': { ...cardBase.ace, image: AceHearts },
@@ -112,10 +115,12 @@ const cards = {
   'king-diamonds': { ...cardBase.king, image: KingDiamonds },
   'king-hearts': { ...cardBase.king, image: KingHearts },
   'king-spades': { ...cardBase.king, image: KingSpades },
-  jack15: { value: 15, image: KingSpades },
-  jack20: { value: 20, image: KingSpades },
-  jack30: { value: 30, image: KingSpades },
-  jack35: { value: 35, image: KingSpades },
+  jack15: { value: 15, image: Joker },
+  jack20: { value: 20, image: Joker },
+  jack30: { value: 30, image: Joker },
+  jack35: { value: 35, image: Joker },
 };
+
+export const jockerCards: Array<keyof typeof cards> = ['jack15', 'jack20', 'jack30', 'jack35'];
 
 export default cards;
