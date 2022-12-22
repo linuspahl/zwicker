@@ -36,8 +36,6 @@ const MatchTable = () => {
     ({ userId }) => userId === currentUser.id,
   )?.cards ?? [];
 
-  //   const { data: matchUser } = useFetchMatchUser(matchId);
-
   if (match.status === 'ended') {
     // navigate navigate to game has ended page.
   }

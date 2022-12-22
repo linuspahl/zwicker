@@ -10,7 +10,8 @@ const Container = styled.div`
 const InnerContainer = styled.div(({ $hasFocus }: { $hasFocus: boolean }) => css`
   display: flex;
   overflow-x: scroll;
-  padding: var(--tiny-spacing);
+  margin-top: ${$hasFocus ? '14px' : '0'};
+  padding: ${$hasFocus ? 'var(--tiny-spacing)' : '20px var(--tiny-spacing) var(--tiny-spacing) var(--tiny-spacing)'};
   border: 6px solid ${$hasFocus ? 'yellow' : 'transparent'};
 `);
 
