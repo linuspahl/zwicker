@@ -40,7 +40,7 @@ const Option = styled.div`
   }
 `;
 
-const MoveOptions = ({ matchId, cardId }: { matchId: number, cardId: keyof typeof CardSet }) => {
+const MoveOptions = ({ matchId }: { matchId: number }) => {
   const { setCurrentMove, currentMove } = useCurrentMove();
   const { submitMove } = useMatchMove();
 
@@ -61,10 +61,9 @@ const MoveOptions = ({ matchId, cardId }: { matchId: number, cardId: keyof typeo
     }
 
     if (type === 'building') {
-      const { value, alternativeValue } = getCard(cardId);
       return setCurrentMove((cur = {}) => ({
         sourceCardId: cur.sourceCardId,
-        sourceCardValue: alternativeValue ? undefined : value,
+        sourceCardValue: undefined,
         type,
       }));
     }
@@ -84,11 +83,22 @@ const MoveOptions = ({ matchId, cardId }: { matchId: number, cardId: keyof typeo
   );
 };
 
+const getCardBuildingValues = (value: number, alternativeValue: number | undefined) => {
+  const values = [value, -value];
+
+  if (alternativeValue) {
+    return [...values, alternativeValue, -alternativeValue];
+  }
+
+  return values;
+};
+
 const BuildOptions = ({ cardId }: { cardId: keyof typeof CardSet }) => {
   const { setCurrentMove } = useCurrentMove();
 
   const onClick = (selectedValue: number) => (event: { stopPropagation: () => void; }) => {
     event.stopPropagation();
+
     setCurrentMove((cur = {}) => ({
       sourceCardId: cur.sourceCardId,
       type: cur.type,
@@ -98,10 +108,13 @@ const BuildOptions = ({ cardId }: { cardId: keyof typeof CardSet }) => {
 
   const { value, alternativeValue } = getCard(cardId);
 
+  const options = getCardBuildingValues(value, alternativeValue);
+
   return (
     <Options>
-      <Option onClick={onClick(value)}>{value}</Option>
-      {alternativeValue && <Option onClick={onClick(alternativeValue)}>{alternativeValue}</Option>}
+      {options.map((optionValue) => (
+        <Option key={optionValue} onClick={onClick(optionValue)}>{optionValue}</Option>
+      ))}
     </Options>
   );
 };
@@ -115,7 +128,7 @@ const cardOverlay = (
   if (isCurrentMove
     && currentMove?.sourceCardId === cardId
     && !currentMove?.type) {
-    return <MoveOptions matchId={matchId} cardId={cardId} />;
+    return <MoveOptions matchId={matchId} />;
   }
 
   if (isCurrentMove
@@ -143,7 +156,9 @@ const UserMatchCards = ({ cards, isCurrentMove, matchId }: Props) => {
         {cards.map((({ cardId }) => {
           const cardIsSelected = isCurrentMove
           && currentMove?.sourceCardId === cardId
-          && (currentMove?.type === 'picking' || currentMove?.type === 'building');
+          && (currentMove?.type === 'picking' || currentMove?.type === 'building')
+          && currentMove?.sourceCardValue !== undefined;
+
           const overlay = cardOverlay(isCurrentMove, currentMove, matchId, String(cardId));
 
           return (

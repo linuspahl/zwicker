@@ -97,10 +97,10 @@ const MatchBoard = ({ cardStacks, isCurrentMove, matchId }: {
 }) => {
   const { currentMove, setCurrentMove } = useCurrentMove();
   const { submitMove } = useMatchMove();
-  const hasFocus = isCurrentMove && (currentMove?.type === 'picking' || currentMove?.type === 'building');
+  const hasFocus = isCurrentMove && (currentMove?.type === 'picking' || (currentMove?.type === 'building' && currentMove?.sourceCardValue !== undefined));
 
   const onClick = (
-    { cardId, value }: { cardId: keyof typeof CardSet, value?: number },
+    { cardId }: { cardId: keyof typeof CardSet, value?: number },
     cardStack: Array<{ cardId: keyof typeof CardSet, value?: number }>,
   ) => {
     const card = getCard(cardId);
