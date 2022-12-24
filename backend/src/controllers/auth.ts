@@ -39,7 +39,7 @@ const signup = ({body: { username, password, roles }}, res) => {
 const signin = ({ body: { username, password }}, res) => {
   User.findOne({ where: { username } }).then(user => {
     if (!user) {
-      return res.status(404).send({ message: "User Not found." });
+      return res.status(404).send({ message: "Username oder Passwort ist inkorrekt." });
     }
     const passwordIsValid = bcrypt.compareSync(
       password,
@@ -48,7 +48,7 @@ const signin = ({ body: { username, password }}, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({
         accessToken: null,
-        message: "Invalid Password!"
+        message: "Username oder Passwort ist inkorrekt."
       });
     }
     const token = jwt.sign({ id: user.id }, config.secret, {
