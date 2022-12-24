@@ -56,6 +56,10 @@ const getUsers = async ({ params: { matchId }}, res) => {
     res.status(500).send({ message: err.message });
   });
 
+  if (!match) {
+    return res.status(404).send({ message: "Match not found" });
+  }
+
   return match.getMatchUsers({
     include: { 
       model: db.user,
@@ -176,20 +180,20 @@ const move = async ({ userId, body: {
 
   if (type === 'picking') {
     matchStateUser.cards = matchStateUser.cards.filter((card) => card !== sourceCardId)
-    const targetBoardCard = matchState.boardCards.find(
+    const targetBoardCardStack = matchState.boardCards.find(
       (cardStack) => cardStack.find(({cardId}) => (cardId === targetCardId))
     );
     // TODO if value of source and target card do not match, throw error
     matchState.boardCards = matchState.boardCards.filter(
-      (cardStack) => cardStack.find(({ cardId }) => cardId !== targetCardId)
+      (cardStack) => !cardStack.find(({ cardId }) => cardId === targetCardId)
     );
     const isZwick = matchState.boardCards.length <= 0;
 
+    console.log({targetBoardCardStack, boardCards: matchState.boardCards })
     matchStateUser.collectedCards = [
       ...(matchStateUser.collectedCards ?? []),
       { cardId: sourceCardId, isZwick },
-      { cardId: targetCardId },
-      ...(targetBoardCard.underlyingCards ?? []).map(({ cardId }) => cardId)
+      ...(targetBoardCardStack ?? []).map(({ cardId }) => cardId)
     ]
     matchState.lastPickUserId = userId;
   }

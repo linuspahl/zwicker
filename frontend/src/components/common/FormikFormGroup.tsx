@@ -19,10 +19,15 @@ type Props = {
   name: string,
   label: string,
   help?: string,
+  autoCapitalize?: boolean,
 }
 
 const FormikFormGroup = ({
-  type, name, label, help,
+  type,
+  name,
+  label,
+  help,
+  autoCapitalize,
 }: Props) => (
   <FormGroup>
     <Field name={name}>
@@ -30,7 +35,7 @@ const FormikFormGroup = ({
         <>
           <Label htmlFor={name}>{label}</Label>
           <InputWrapper>
-            <Input type={type} {...field} />
+            <Input type={type} autoCapitalize={autoCapitalize ? 'on' : 'off'} {...field} />
             {help && <Help>{help}</Help>}
           </InputWrapper>
         </>
@@ -42,6 +47,7 @@ const FormikFormGroup = ({
 FormikFormGroup.defaultProps = {
   type: 'text',
   help: undefined,
+  autoCapitalize: false,
 };
 
 export default FormikFormGroup;
