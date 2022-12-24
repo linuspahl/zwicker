@@ -166,14 +166,12 @@ const move = async ({ userId, body: {
   const matchStateUsers = await matchState.getMatchStateUsers()
   const matchStateUser = matchStateUsers.find(({ userId: matchStateUserId }) => matchStateUserId === userId)
   const sortedMatchUsers = matchUsers.sort((a, b) => a.position - b.position)
-
   const nextMatchUser = matchUserIndex + 1 === sortedMatchUsers.length ? sortedMatchUsers[0] : sortedMatchUsers[matchUserIndex + 1]
 
   if (type === 'dropping') {
     // TODO: check if user is able to perform move
     matchStateUser.cards = matchStateUser.cards.filter(card => card !== sourceCardId)
-    matchState.boardCards = [...matchState.boardCards, { cardId: sourceCardId, value: undefined }];
-    matchState.currentMoveUserId = nextMatchUser.userId;
+    matchState.boardCards = [...matchState.boardCards, [{ cardId: sourceCardId, value: undefined }]];
   }
 
   if (type === 'picking') {
@@ -214,6 +212,7 @@ const move = async ({ userId, body: {
     matchState.boardCards = updatedBoardCards;
   }
 
+  matchState.currentMoveUserId = nextMatchUser.userId;
   await matchStateUser.save();
   await matchState.save();
 

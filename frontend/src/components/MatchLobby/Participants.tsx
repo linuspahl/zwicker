@@ -45,7 +45,7 @@ type Props = {
 }
 
 const Participants = ({ matchId, hostUserId }: Props) => {
-  const { data: matchUsers } = useFetchMatchUsers(matchId);
+  const { data: matchUsers } = useFetchMatchUsers(matchId, { refetchInterval: 3000 });
   const currentUser = useCurrentUser();
   const currentUserIsHost = currentUser?.id === hostUserId;
   return (

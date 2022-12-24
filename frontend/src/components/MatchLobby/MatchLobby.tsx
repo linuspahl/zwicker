@@ -29,7 +29,7 @@ const MatchLobby = () => {
     throw Error('Missing matchId.');
   }
 
-  const { data: match } = useFetchMatch(matchId);
+  const { data: match } = useFetchMatch(matchId, { refetchInterval: 3000 });
   const onMatchDelete = useCallback(() => deleteMatch(matchId), [deleteMatch, matchId]);
   const onMatchStart = useCallback(() => startMatch(matchId), [startMatch, matchId]);
 

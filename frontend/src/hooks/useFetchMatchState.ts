@@ -9,7 +9,11 @@ const useFetchMatchState = (matchId: string): {
 } => {
   const { get } = useBackendApi();
   const fetchMatchState = () => get<MatchStateJSON>(`/api/matches/${matchId}/state`).then(({ data }) => fromJSON(data));
-  const { data, isFetching } = useQuery({ queryKey: ['matches', Number(matchId), 'state'], queryFn: fetchMatchState });
+  const { data, isFetching } = useQuery({
+    queryKey: ['matches', Number(matchId), 'state'],
+    queryFn: fetchMatchState,
+    refetchInterval: 2000,
+  });
   return { data, isFetching };
 };
 

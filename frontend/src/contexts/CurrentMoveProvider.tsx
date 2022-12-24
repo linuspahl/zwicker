@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CurrentMove } from '../types/types';
 
 export const CurrentMoveContext = React.createContext<undefined | {
@@ -8,11 +8,16 @@ export const CurrentMoveContext = React.createContext<undefined | {
 
 type Props = {
   children: React.ReactNode,
+  currentMoveUserId: undefined | number,
 }
 
-const CurrentUserProvider = ({ children }: Props) => {
+const CurrentMoveProvider = ({ children, currentMoveUserId }: Props) => {
   const [currentMove, setCurrentMove] = useState<CurrentMove | undefined>(undefined);
   const contextValue = useMemo(() => ({ currentMove, setCurrentMove }), [currentMove]);
+
+  useEffect(() => {
+    setCurrentMove(undefined);
+  }, [currentMoveUserId]);
 
   return (
     <CurrentMoveContext.Provider value={contextValue}>
@@ -21,4 +26,4 @@ const CurrentUserProvider = ({ children }: Props) => {
   );
 };
 
-export default CurrentUserProvider;
+export default CurrentMoveProvider;

@@ -8,6 +8,7 @@ import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
 import useFetchMatchState from '../../hooks/useFetchMatchState';
 import useCurrentUser from '../../hooks/useCurrentUser';
 import CurrentMoveProvider from '../../contexts/CurrentMoveProvider';
+import { MatchState } from '../../types/types';
 
 const Containter = styled.div`
   width: 100vw;
@@ -17,7 +18,7 @@ const Containter = styled.div`
   padding-top: var(--spacing);
 `;
 
-const MatchTable = () => {
+const MatchTable = ({ matchState }: { matchState: MatchState | undefined }) => {
   const { matchId } = useParams();
   const currentUser = useCurrentUser();
 
@@ -26,7 +27,6 @@ const MatchTable = () => {
   }
 
   const { data: matchUsers } = useFetchMatchUsers(matchId);
-  const { data: matchState } = useFetchMatchState(matchId);
   const { data: match } = useFetchMatch(matchId);
 
   if (!match || !matchUsers || !matchState || !currentUser) {
@@ -57,10 +57,18 @@ const MatchTable = () => {
   );
 };
 
-const MatchTableWrapper = () => (
-  <CurrentMoveProvider>
-    <MatchTable />
-  </CurrentMoveProvider>
-);
+const MatchTableWrapper = () => {
+  const { matchId } = useParams();
+  if (!matchId) {
+    throw Error('Missing matchId.');
+  }
+  const { data: matchState } = useFetchMatchState(matchId);
+
+  return (
+    <CurrentMoveProvider currentMoveUserId={matchState?.currentMoveUserId}>
+      <MatchTable matchState={matchState} />
+    </CurrentMoveProvider>
+  );
+};
 
 export default MatchTableWrapper;
