@@ -42,7 +42,7 @@ const Menu = ({ toggleMenu }: Props) => {
     <Container>
       <Sidebar>
         <h2>Menü</h2>
-        <Button onClick={logout} size="small">Abmelden</Button>
+        <Button onClick={logout}>Abmelden</Button>
       </Sidebar>
       <Overlay onClick={toggleMenu} />
     </Container>

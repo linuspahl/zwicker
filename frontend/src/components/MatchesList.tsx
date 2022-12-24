@@ -57,8 +57,8 @@ const MatchesListItem = ({ match: { title, hasPassword, id } }: { match: Match }
         {title}
       </MatchTitle>
       <ItemActions>
-        <Button size="small" onClick={onJoinMatch}>
-          {hasPassword && <Icon name="lock" />}Mitmachen
+        <Button onClick={onJoinMatch} category="primary">
+          {hasPassword && <Icon name="lock" />}Beitreten
         </Button>
       </ItemActions>
     </ItemContainer>
@@ -67,7 +67,9 @@ const MatchesListItem = ({ match: { title, hasPassword, id } }: { match: Match }
 
 const MatchesList = ({ matches }: { matches: Array<Match> }) => (
   <div>
-    {matches?.length ? matches.map((match) => <MatchesListItem match={match} key={match.id} />) : 'Keine vorhanden.'}
+    {matches?.length ? matches.map((match) => (
+      <MatchesListItem match={match} key={match.id} />
+    )) : 'Keine vorhanden.'}
   </div>
 );
 

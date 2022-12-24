@@ -20,13 +20,13 @@ const ButtonGroup = styled.div`
   align-items: center;
 `;
 
-const CreateNew = () => {
+const CreateNew = ({ matchesCount }: { matchesCount: number }) => {
   const navigate = useNavigate();
 
   return (
     <ButtonGroup>
-      <Button onClick={() => navigate('matches/create')} size="small">
-        ...oder neues Spiel erstellen
+      <Button onClick={() => navigate('matches/create')} size="small" category={matchesCount ? undefined : 'primary'}>
+        {matchesCount ? '...oder neues Spiel erstellen' : 'Neues Spiel erstellen'}
       </Button>
     </ButtonGroup>
   );
@@ -47,7 +47,7 @@ const StartPage = () => {
         ) : <Alert>Keine Spiele gefunden</Alert>}
       </Section>
 
-      <CreateNew />
+      <CreateNew matchesCount={lobbyMatches?.length ?? 0} />
     </PageContainer>
   );
 };

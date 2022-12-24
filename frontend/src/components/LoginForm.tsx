@@ -29,7 +29,7 @@ const LoginForm = ({ onSubmit, errorMessage }: Props) => (
       {errorMessage && <Alert type="danger">{errorMessage}</Alert>}
 
       <FormActions>
-        <Button type="submit">Anmelden</Button>
+        <Button type="submit" category="primary">Anmelden</Button>
       </FormActions>
     </Form>
   </Formik>
