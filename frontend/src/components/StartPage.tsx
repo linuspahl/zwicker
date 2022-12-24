@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, PageContainer } from './common';
+import { Alert, Button, PageContainer } from './common';
 import H1 from './common/H1';
 import H2 from './common/H2';
 import MatchesList from './MatchesList';
@@ -40,12 +40,13 @@ const StartPage = () => {
   return (
     <PageContainer>
       <H1>Zwicker</H1>
-      {!!lobbyMatches?.length && (
-        <Section>
-          <H2>Bald startende Spiele</H2>
+      <Section>
+        <H2>Bald startende Spiele</H2>
+        {lobbyMatches?.length ? (
           <MatchesList matches={lobbyMatches} />
-        </Section>
-      )}
+        ) : <Alert>Keine Spiele gefunden</Alert>}
+      </Section>
+
       <CreateNew />
     </PageContainer>
   );
