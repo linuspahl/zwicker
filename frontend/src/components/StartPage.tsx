@@ -36,7 +36,6 @@ const StartPage = () => {
   const { data: matches } = useFetchMatches();
 
   const lobbyMatches = matches?.filter(({ status }) => status === 'lobby');
-  const runningMatches = matches?.filter(({ status }) => status === 'running');
 
   return (
     <PageContainer>
@@ -45,12 +44,6 @@ const StartPage = () => {
         <Section>
           <H2>Bald startende Spiele</H2>
           <MatchesList matches={lobbyMatches} />
-        </Section>
-      )}
-      {!!runningMatches?.length && (
-        <Section>
-          <H2>Laufende Spiele</H2>
-          <MatchesList matches={runningMatches} />
         </Section>
       )}
       <CreateNew />
