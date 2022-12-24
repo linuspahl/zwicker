@@ -101,8 +101,8 @@ const start = async ({ params: { matchId } }, res) => {
     return userCards
   });
 
-  const boardCards = getMultipleRandom(unplayedCards, 4);
-  unplayedCards = unplayedCards.filter(item => !boardCards.includes(item))
+  const boardCards = getMultipleRandom(unplayedCards, 4).map((cardId) => ([{ cardId, value: undefined }]));
+  unplayedCards = unplayedCards.filter(item => !boardCards.find((cardStack) => cardStack.find(({cardId}) => cardId === item)));
 
   const matchState = await MatchState.create({
     matchId: match.id,
@@ -146,7 +146,9 @@ const move = async ({ userId, body: {
   matchId,
   type,
   sourceCardId,
-  targetCardId
+  sourceCardValue,
+  targetCardId,
+  targetCardValue
 }}, res) => {
   const match = await Match.findByPk(matchId).catch();
   
@@ -170,12 +172,51 @@ const move = async ({ userId, body: {
   if (type === 'dropping') {
     // TODO: check if user is able to perform move
     matchStateUser.cards = matchStateUser.cards.filter(card => card !== sourceCardId)
-    matchState.boardCards = [...matchState.boardCards, sourceCardId];
+    matchState.boardCards = [...matchState.boardCards, { cardId: sourceCardId, value: undefined }];
     matchState.currentMoveUserId = nextMatchUser.userId;
-
-    await matchStateUser.save();
-    await matchState.save();
   }
+
+  if (type === 'picking') {
+    matchStateUser.cards = matchStateUser.cards.filter((card) => card !== sourceCardId)
+    const targetBoardCard = matchState.boardCards.find(
+      (cardStack) => cardStack.find(({cardId}) => (cardId === targetCardId))
+    );
+    // TODO if value of source and target card do not match, throw error
+    matchState.boardCards = matchState.boardCards.filter(
+      (cardStack) => cardStack.find(({ cardId }) => cardId !== targetCardId)
+    );
+    const isZwick = matchState.boardCards.length <= 0;
+
+    matchStateUser.collectedCards = [
+      ...(matchStateUser.collectedCards ?? []),
+      { cardId: sourceCardId, isZwick },
+      { cardId: targetCardId },
+      ...(targetBoardCard.underlyingCards ?? []).map(({ cardId }) => cardId)
+    ]
+    matchState.lastPickUserId = userId;
+  }
+
+  if (type === 'building') {
+    const updatedBoardCards = matchState.boardCards.map((cardStack) => {
+      const targetCardIndex = cardStack.findIndex(({ cardId }) => cardId === targetCardId);
+      console.log({targetCardIndex, cardStack, targetCardId});
+      if (targetCardIndex >= 0) {
+        const targetCard = cardStack[targetCardIndex];
+        const newTargetCard = { cardId: targetCard.cardId, value: !targetCard.value ? targetCardValue : targetCard.value };
+        const newCardStack = [...cardStack];
+        newCardStack[targetCardIndex] = newTargetCard
+        return [...newCardStack, { cardId: sourceCardId, value: sourceCardValue }]
+      }
+      return cardStack;
+    })
+    
+    matchStateUser.cards = matchStateUser.cards.filter((card) => card !== sourceCardId)
+    matchState.boardCards = updatedBoardCards;
+  }
+
+  await matchStateUser.save();
+  await matchState.save();
+
   return res.status(200).send();
 }
 

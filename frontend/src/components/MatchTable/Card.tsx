@@ -38,12 +38,14 @@ const Card = ({
   cardId,
   className,
   overlay,
+  badge,
   onClick,
   isSelected,
 }: {
   cardId: keyof typeof cards,
   className?: string,
   overlay?: React.ReactNode,
+  badge?: React.ReactNode,
   onClick?: () => void,
   isSelected?: boolean
 }) => {
@@ -54,6 +56,7 @@ const Card = ({
   return (
     <CardContainer className={className} onClick={onClick} $isSelected={!!isSelected}>
       {isJoker && <JokerValue>{value}</JokerValue>}
+      {badge}
       {overlay}
       <Image />
     </CardContainer>
@@ -65,6 +68,7 @@ Card.defaultProps = {
   className: undefined,
   onClick: undefined,
   isSelected: false,
+  badge: undefined,
 };
 
 export default Card;

@@ -136,7 +136,6 @@ type Props = {
 
 const UserMatchCards = ({ cards, isCurrentMove, matchId }: Props) => {
   const { setCurrentMove, currentMove } = useCurrentMove();
-  console.log({ currentMove });
 
   return (
     <Container>
@@ -151,7 +150,11 @@ const UserMatchCards = ({ cards, isCurrentMove, matchId }: Props) => {
             <Card
               isSelected={cardIsSelected}
               cardId={cardId}
-              onClick={() => setCurrentMove({ sourceCardId: cardId })}
+              onClick={() => {
+                if (isCurrentMove) {
+                  setCurrentMove({ sourceCardId: cardId });
+                }
+              }}
               key={cardId}
               overlay={overlay}
             />

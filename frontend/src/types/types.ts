@@ -30,7 +30,7 @@ export type MatchJSON = {
 
 export type MatchState = {
   id: number,
-  boardCards: Array<keyof typeof CardSet>,
+  boardCards: Array<Array<{ cardId: keyof typeof CardSet, value?: number }>>,
   currentMoveUserId: number,
   matchStateUsers: Array<{
     cards: Array<keyof typeof CardSet>,
@@ -42,7 +42,7 @@ export type MatchStateJSON = {
   id: number,
   cards: Array<string>,
   currentMoveUserId: number,
-  boardCards: Array<keyof typeof CardSet>,
+  boardCards: Array<Array<{ cardId: keyof typeof CardSet, value?: number }>>,
   matchStateUsers: Array<{
     cards: Array<keyof typeof CardSet>,
     userId: number,
@@ -67,6 +67,7 @@ export type Card = {
 export type CurrentMove = {
   sourceCardId?: keyof typeof CardSet,
   sourceCardValue?: number,
+  targetCardValue?: number,
   targetCardId?: keyof typeof CardSet,
   type?: 'dropping' | 'building' | 'picking',
 }

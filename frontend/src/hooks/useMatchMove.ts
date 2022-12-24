@@ -16,11 +16,13 @@ const useMatchMove = () => {
       sourceCardId,
       sourceCardValue,
       targetCardId,
+      targetCardValue,
     }:{
     matchId: number,
     type: CurrentMove['type'],
     sourceCardId: keyof typeof CardSet | undefined,
     sourceCardValue?: number,
+    targetCardValue?: number,
     targetCardId?: keyof typeof CardSet,
   },
   ) => {
@@ -32,6 +34,7 @@ const useMatchMove = () => {
       sourceCardId,
       sourceCardValue,
       targetCardId,
+      targetCardValue,
     }).then(() => {
       queryClient.invalidateQueries(['matches', matchId, 'state']);
     }).finally(() => {
