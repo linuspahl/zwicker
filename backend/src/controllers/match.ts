@@ -189,13 +189,21 @@ const move = async ({ userId, body: {
     );
     const isZwick = matchState.boardCards.length <= 0;
 
-    console.log({targetBoardCardStack, boardCards: matchState.boardCards })
     matchStateUser.collectedCards = [
       ...(matchStateUser.collectedCards ?? []),
       { cardId: sourceCardId, isZwick },
-      ...(targetBoardCardStack ?? []).map(({ cardId }) => cardId)
+      ...(targetBoardCardStack ?? []).map(({ cardId }) => ({ cardId }))
     ]
     matchState.lastPickUserId = userId;
+
+    if (isZwick) {
+      let unplayedCards = matchState.unplayedCards;
+      const newBoardCards = getMultipleRandom(unplayedCards, 4).map((cardId) => ([{ cardId, value: undefined }]));
+      unplayedCards = unplayedCards.filter(item => !newBoardCards.find((cardStack) => cardStack.find(({cardId}) => cardId === item)));
+      console.log({newBoardCards, unplayedCards})
+      matchState.boardCards = newBoardCards;
+      matchState.unplayedCards = unplayedCards;
+    }
   }
 
   if (type === 'building') {
@@ -214,6 +222,30 @@ const move = async ({ userId, body: {
     
     matchStateUser.cards = matchStateUser.cards.filter((card) => card !== sourceCardId)
     matchState.boardCards = updatedBoardCards;
+  }
+
+  const matchStateUsersCards = matchStateUsers.flatMap(({cards}) => cards)
+
+  if (!matchStateUsersCards?.length) {
+    if (type !== 'picking') {
+      const lastUserWhoPicked = matchStateUsers.find(({ userId }) => userId === matchState.lastPickUserId)
+      lastUserWhoPicked.collectedCards = [
+        ...(matchStateUser.collectedCards ?? []),
+        ...(matchState.boardCards ?? []).flatMap((cardStack) => cardStack.map(({ cardId }) => { cardId }))
+      ]
+    }
+
+    const newMatchStateUserCards = matchUsers.map(() => {
+      let unplayedCards = matchState.unplayedCards;
+      const userCards = getMultipleRandom(unplayedCards, 4);
+      unplayedCards = unplayedCards.filter(item => !userCards.includes(item));
+      return userCards
+    });
+
+    for (const [index, matchStateUser] of matchStateUsers.entries()) {
+      matchStateUser.cards = newMatchStateUserCards[index];
+      await matchStateUser.save()
+    }
   }
 
   matchState.currentMoveUserId = nextMatchUser.userId;
