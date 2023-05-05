@@ -58,7 +58,6 @@ const MatchLobby = () => {
           <Container>
             <Participants
               matchUsers={matchUsers}
-              matchId={matchId}
               hostUserId={match.hostUserId}
             />
           </Container>

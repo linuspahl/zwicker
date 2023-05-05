@@ -41,28 +41,28 @@ const Number = styled.div`
 `;
 
 type Props = {
-  matchId: string,
   hostUserId: number,
   matchUsers: Array<MatchUser>
 }
 
-const Participants = ({ matchId, hostUserId, matchUsers }: Props) => {
+const Participants = ({ hostUserId, matchUsers }: Props) => {
   const currentUser = useCurrentUser();
   const currentUserIsHost = currentUser?.id === hostUserId;
+
   return (
     <div>
       <H2>Teilnehmer</H2>
       {!!matchUsers?.length && (
         <ul>
-          {matchUsers.map(({ user: { username }, id }, index) => (
+          {matchUsers.map(({ user: { username }, id, userId }, index) => (
             <ListItem key={id}>
               <LeftCol>
                 <Number>{index + 1}</Number>
                 <Name>
-                  {id === currentUser?.id && <Icon name="star" />}{username}
+                  {userId === currentUser?.id && <Icon name="star" />}{username}
                 </Name>
               </LeftCol>
-              {(currentUserIsHost && id !== hostUserId) && (
+              {(currentUserIsHost && userId !== hostUserId) && (
                 <Actions>
                   <Icon name="delete" />
                 </Actions>
