@@ -16,6 +16,7 @@ const Containter = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: var(--spacing);
+  justify-content: space-between;
 `;
 
 const MatchTable = ({ matchState }: { matchState: MatchState | undefined }) => {

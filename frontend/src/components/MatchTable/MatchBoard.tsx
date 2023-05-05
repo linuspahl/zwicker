@@ -7,6 +7,7 @@ import { MatchState } from '../../types/types';
 import getCard from '../../utils/getCard';
 import Card from './Card';
 import CardList from './CardsList';
+import Section from './Section';
 
 const Containter = styled.div`
   width: 100%;
@@ -155,35 +156,39 @@ const MatchBoard = ({ cardStacks, isCurrentMove, matchId }: {
   };
 
   return (
-    <Containter>
-      <CardList hasFocus={hasFocus}>
-        {cardStacks.map(((cardStack) => {
-          const card = cardStack.at(-1);
+    <Section headline="Tisch">
+      <Containter>
+        <CardList hasFocus={hasFocus}>
+          {cardStacks.map(((cardStack) => {
+            const card = cardStack.at(-1);
 
-          if (!card) {
-            return null;
-          }
+            if (!card) {
+              return null;
+            }
 
-          const overlay = isCurrentMove
+            const overlay = isCurrentMove
             && currentMove?.type === 'building'
             && currentMove?.targetCardId === card.cardId
             && !currentMove?.targetCardValue
             && cardStack.length === 1
-            ? <BuildOptions cardId={card.cardId} matchId={matchId} /> : undefined;
+              ? <BuildOptions cardId={card.cardId} matchId={matchId} /> : undefined;
 
-          const badge = cardStack.length > 1 ? <CardStackBadge cardStack={cardStack} /> : undefined;
-          return (
-            <Card
-              badge={badge}
-              cardId={card.cardId}
-              key={card.cardId}
-              onClick={() => onClick(card, cardStack)}
-              overlay={overlay}
-            />
-          );
-        }))}
-      </CardList>
-    </Containter>
+            const badge = cardStack.length > 1
+              ? <CardStackBadge cardStack={cardStack} />
+              : undefined;
+            return (
+              <Card
+                badge={badge}
+                cardId={card.cardId}
+                key={card.cardId}
+                onClick={() => onClick(card, cardStack)}
+                overlay={overlay}
+              />
+            );
+          }))}
+        </CardList>
+      </Containter>
+    </Section>
   );
 };
 

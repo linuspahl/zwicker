@@ -6,6 +6,7 @@ import { CurrentMove } from '../../types/types';
 import getCard from '../../utils/getCard';
 import Card from './Card';
 import CardsList from './CardsList';
+import Section from './Section';
 
 const Container = styled.div`
   width: 100%;
@@ -151,32 +152,34 @@ const UserMatchCards = ({ cards, isCurrentMove, matchId }: Props) => {
   const { setCurrentMove, currentMove } = useCurrentMove();
 
   return (
-    <Container>
-      <CardsList hasFocus={isCurrentMove && !currentMove?.sourceCardId}>
-        {cards.map((({ cardId }) => {
-          const cardIsSelected = isCurrentMove
+    <Section headline="Hand">
+      <Container>
+        <CardsList hasFocus={isCurrentMove && !currentMove?.sourceCardId}>
+          {cards.map((({ cardId }) => {
+            const cardIsSelected = isCurrentMove
           && currentMove?.sourceCardId === cardId
           && (currentMove?.type === 'picking' || currentMove?.type === 'building')
           && currentMove?.sourceCardValue !== undefined;
 
-          const overlay = cardOverlay(isCurrentMove, currentMove, matchId, String(cardId));
+            const overlay = cardOverlay(isCurrentMove, currentMove, matchId, String(cardId));
 
-          return (
-            <Card
-              isSelected={cardIsSelected}
-              cardId={cardId}
-              onClick={() => {
-                if (isCurrentMove) {
-                  setCurrentMove({ sourceCardId: cardId });
-                }
-              }}
-              key={cardId}
-              overlay={overlay}
-            />
-          );
-        }))}
-      </CardsList>
-    </Container>
+            return (
+              <Card
+                isSelected={cardIsSelected}
+                cardId={cardId}
+                onClick={() => {
+                  if (isCurrentMove) {
+                    setCurrentMove({ sourceCardId: cardId });
+                  }
+                }}
+                key={cardId}
+                overlay={overlay}
+              />
+            );
+          }))}
+        </CardsList>
+      </Container>
+    </Section>
   );
 };
 
