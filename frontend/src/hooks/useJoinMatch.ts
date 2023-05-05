@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useBackendApi from './useBackendApi';
+import useBackendApi from './useFetchApi';
 
 const useJoinMatch = () => {
   const [isJoining, setIsJoining] = useState(false);

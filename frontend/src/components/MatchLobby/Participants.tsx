@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import useCurrentUser from '../../hooks/useCurrentUser';
 import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
+import { MatchUser } from '../../types/types';
 import { H2, Icon } from '../common';
 
 const ListItem = styled.li`
@@ -42,10 +43,10 @@ const Number = styled.div`
 type Props = {
   matchId: string,
   hostUserId: number,
+  matchUsers: Array<MatchUser>
 }
 
-const Participants = ({ matchId, hostUserId }: Props) => {
-  const { data: matchUsers } = useFetchMatchUsers(matchId, { refetchInterval: 3000 });
+const Participants = ({ matchId, hostUserId, matchUsers }: Props) => {
   const currentUser = useCurrentUser();
   const currentUserIsHost = currentUser?.id === hostUserId;
   return (

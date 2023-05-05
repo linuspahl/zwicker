@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fromJSON } from '../models/Match';
 import { Match, MatchJSON } from '../types/types';
-import useBackendApi from './useBackendApi';
+import useBackendApi from './useFetchApi';
 
 const useFetchMatches = (): { data: Array<Match> | undefined, isFetching: boolean } => {
   const { get } = useBackendApi();

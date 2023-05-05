@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { CurrentMove } from '../types/types';
-import useBackendApi from './useBackendApi';
+import useBackendApi from './useFetchApi';
 import CardSet from '../card-set';
 
 const useMatchMove = () => {

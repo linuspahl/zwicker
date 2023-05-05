@@ -31,21 +31,24 @@ const StyledButton = styled.button<{
 `);
 
 type Props = {
-  children: React.ReactNode,
-  type?: 'button' | 'submit',
-  size?: Size,
   category?: 'primary',
+  children: React.ReactNode,
+  disabled?: boolean,
   onClick?: (event: React.SyntheticEvent) => void,
+  size?: Size,
+  type?: 'button' | 'submit',
 }
 
 const Button = ({
-  children,
-  type,
-  size,
-  onClick,
+  disabled,
   category,
+  children,
+  onClick,
+  size,
+  type,
 }: Props) => (
   <StyledButton
+    disabled={disabled}
     type={type}
     $category={category}
     $size={size}
@@ -56,10 +59,11 @@ const Button = ({
 );
 
 Button.defaultProps = {
-  type: 'button',
-  size: 'default',
   category: undefined,
+  disabled: false,
   onClick: undefined,
+  size: 'default',
+  type: 'button',
 };
 
 export default Button;

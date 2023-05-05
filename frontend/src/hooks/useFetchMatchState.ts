@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fromJSON } from '../models/MatchState';
 import { MatchState, MatchStateJSON } from '../types/types';
-import useBackendApi from './useBackendApi';
+import useBackendApi from './useFetchApi';
 
 const useFetchMatchState = (matchId: string): {
   data: MatchState | undefined,

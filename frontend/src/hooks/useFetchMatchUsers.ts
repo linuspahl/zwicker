@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { MatchUser } from '../types/types';
-import useBackendApi from './useBackendApi';
+import useBackendApi from './useFetchApi';
 
 const useFetchMatchUsers = (
   matchId: string,

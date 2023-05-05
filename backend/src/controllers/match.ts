@@ -96,9 +96,14 @@ const start = async ({ params: { matchId } }, res) => {
   });
   
   if (match.status !== 'lobby') {
-    return res.status(400).send({ message: `Match can not started because its status is not "lobby", but "${match.status}"` });  
+    return res.status(400).send({ message: `Match can not start because its status is not "lobby", but "${match.status}"` });
   }
   const matchUsers = await match.getMatchUsers();
+
+  if (matchUsers?.length <= 1) {
+    return res.status(400).send({ message: `Match can not start because it needs more than one match user.` });
+  }
+
   const matchUserCards = matchUsers.map(() => {
     const userCards = getMultipleRandom(unplayedCards, 4);
     unplayedCards = unplayedCards.filter(item => !userCards.includes(item));

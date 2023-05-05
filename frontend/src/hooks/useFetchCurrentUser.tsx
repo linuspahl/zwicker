@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fromJSON } from '../models/User';
 import { UserJSON } from '../types/types';
-import useBackendApi from './useBackendApi';
+import useBackendApi from './useFetchApi';
 import useBackendApiToken from './useBackendApiToken';
 
 const useFetchCurrentUser = () => {
