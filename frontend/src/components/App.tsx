@@ -6,6 +6,8 @@ import {
 import styled, { createGlobalStyle } from 'styled-components';
 import { useCallback, useState } from 'react';
 import { MantineProvider } from '@mantine/core';
+import { Inspector, InspectParams } from 'react-dev-inspector';
+import config from '../config';
 import GlobalFonts from '../fonts';
 
 import Login from './Login';
@@ -80,41 +82,56 @@ const Container = styled.div`
 const App = () => {
   const [showMenu, setShowMenu] = useState(false);
   const toggleMenu = useCallback(() => setShowMenu((cur) => !cur), []);
+  console.log(process.env);
 
   return (
-    <BackendApiTokenProvider>
-      <MantineProvider withGlobalStyles withNormalizeCSS>
-        <CurrentUserProvider>
-          <CurrentUserContext.Consumer>
-            {(currentUser) => (
-              <>
-                <GlobalFonts />
-                <GlobalStyle />
-                <Container>
-                  <PageLayout>
-                    {currentUser && (
-                    <>
-                      <MenuToggle onClick={toggleMenu} />
-                      {showMenu && <Menu toggleMenu={toggleMenu} />}
-                      <Router>
-                        <Routes>
-                          <Route path="/" element={<StartPage />} />
-                          <Route path="/matches/create" element={<MatchCreate />} />
-                          <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
-                          <Route path="/matches/table/:matchId" element={<MatchTable />} />
-                        </Routes>
-                      </Router>
-                    </>
-                    )}
-                    {!currentUser && <Login />}
-                  </PageLayout>
-                </Container>
-              </>
-            )}
-          </CurrentUserContext.Consumer>
-        </CurrentUserProvider>
-      </MantineProvider>
-    </BackendApiTokenProvider>
+    <>
+      <BackendApiTokenProvider>
+        <MantineProvider withGlobalStyles withNormalizeCSS>
+          <CurrentUserProvider>
+            <CurrentUserContext.Consumer>
+              {(currentUser) => (
+                <>
+                  <GlobalFonts />
+                  <GlobalStyle />
+                  <Container>
+                    <PageLayout>
+                      {currentUser && (
+                      <>
+                        <MenuToggle onClick={toggleMenu} />
+                        {showMenu && <Menu toggleMenu={toggleMenu} />}
+                        <Router>
+                          <Routes>
+                            <Route path="/" element={<StartPage />} />
+                            <Route path="/matches/create" element={<MatchCreate />} />
+                            <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
+                            <Route path="/matches/table/:matchId" element={<MatchTable />} />
+                          </Routes>
+                        </Router>
+                      </>
+                      )}
+                      {!currentUser && <Login />}
+                    </PageLayout>
+                  </Container>
+                </>
+              )}
+            </CurrentUserContext.Consumer>
+          </CurrentUserProvider>
+        </MantineProvider>
+      </BackendApiTokenProvider>
+      {config.isDevelopment && (
+        <Inspector
+          keys={['command', 'alt', 'o']}
+          disableLaunchEditor
+          onClickElement={({ codeInfo }: InspectParams) => {
+            if (!codeInfo?.absolutePath) return;
+            const { absolutePath, lineNumber, columnNumber } = codeInfo;
+            // you can change the url protocol if you are using in Web IDE
+            window.open(`vscode://file/${absolutePath}:${lineNumber}:${columnNumber}`);
+          }}
+        />
+      )}
+    </>
   );
 };
 

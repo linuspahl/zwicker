@@ -17,6 +17,7 @@
     "axios": "^1.2.1",
     "formik": "^2.2.9",
     "react": "^18.1.0",
+    "react-dev-inspector": "^1.8.4",
     "react-dom": "^18.1.0",
     "react-router-dom": "6",
     "react-scripts": "^5.0.1",
