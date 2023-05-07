@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import useCurrentUser from '../../hooks/useCurrentUser';
-import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
 import { MatchUser } from '../../types/types';
 import { H2, Icon } from '../common';
 

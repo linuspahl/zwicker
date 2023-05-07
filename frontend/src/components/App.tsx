@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import { useCallback, useState } from 'react';
+import { MantineProvider } from '@mantine/core';
 import GlobalFonts from '../fonts';
 
 import Login from './Login';
@@ -82,15 +83,16 @@ const App = () => {
 
   return (
     <BackendApiTokenProvider>
-      <CurrentUserProvider>
-        <CurrentUserContext.Consumer>
-          {(currentUser) => (
-            <>
-              <GlobalFonts />
-              <GlobalStyle />
-              <Container>
-                <PageLayout>
-                  {currentUser && (
+      <MantineProvider withGlobalStyles withNormalizeCSS>
+        <CurrentUserProvider>
+          <CurrentUserContext.Consumer>
+            {(currentUser) => (
+              <>
+                <GlobalFonts />
+                <GlobalStyle />
+                <Container>
+                  <PageLayout>
+                    {currentUser && (
                     <>
                       <MenuToggle onClick={toggleMenu} />
                       {showMenu && <Menu toggleMenu={toggleMenu} />}
@@ -103,14 +105,15 @@ const App = () => {
                         </Routes>
                       </Router>
                     </>
-                  )}
-                  {!currentUser && <Login />}
-                </PageLayout>
-              </Container>
-            </>
-          )}
-        </CurrentUserContext.Consumer>
-      </CurrentUserProvider>
+                    )}
+                    {!currentUser && <Login />}
+                  </PageLayout>
+                </Container>
+              </>
+            )}
+          </CurrentUserContext.Consumer>
+        </CurrentUserProvider>
+      </MantineProvider>
     </BackendApiTokenProvider>
   );
 };

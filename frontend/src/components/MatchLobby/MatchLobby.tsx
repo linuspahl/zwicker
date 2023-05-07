@@ -66,7 +66,7 @@ const MatchLobby = () => {
       <ActionsRow>
         {currentUserIsHost ? (
           <>
-            <Button onClick={onMatchDelete}>Spiel löschen</Button>
+            <Button onClick={onMatchDelete} variant="default">Spiel löschen</Button>
             <Button onClick={onMatchStart} disabled={disableMatchStart}>Spiel starten</Button>
           </>
         ) : <Button>Spiel verlassen</Button>}

@@ -57,7 +57,7 @@ const MatchesListItem = ({ match: { title, hasPassword, id } }: { match: Match }
         {title}
       </MatchTitle>
       <ItemActions>
-        <Button onClick={onJoinMatch} category="primary">
+        <Button onClick={onJoinMatch}>
           {hasPassword && <Icon name="lock" />}Beitreten
         </Button>
       </ItemActions>

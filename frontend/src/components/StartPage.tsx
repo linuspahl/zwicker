@@ -25,7 +25,7 @@ const CreateNew = ({ matchesCount }: { matchesCount: number }) => {
 
   return (
     <ButtonGroup>
-      <Button onClick={() => navigate('matches/create')} size="small" category={matchesCount ? undefined : 'primary'}>
+      <Button onClick={() => navigate('matches/create')} variant="default">
         {matchesCount ? '...oder neues Spiel erstellen' : 'Neues Spiel erstellen'}
       </Button>
     </ButtonGroup>
