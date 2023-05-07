@@ -82,7 +82,6 @@ const Container = styled.div`
 const App = () => {
   const [showMenu, setShowMenu] = useState(false);
   const toggleMenu = useCallback(() => setShowMenu((cur) => !cur), []);
-  console.log(process.env);
 
   return (
     <>

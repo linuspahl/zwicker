@@ -2,7 +2,6 @@ import { Field, FieldProps } from 'formik';
 import styled from 'styled-components';
 import FormGroup from './FormGroup';
 import Input from './Input';
-import Label from './Label';
 
 const Help = styled.div`
   color: grey;
@@ -15,39 +14,49 @@ const InputWrapper = styled.div`
 `;
 
 type Props = {
-  type?: string,
-  name: string,
-  label: string,
-  help?: string,
   autoCapitalize?: boolean,
+  help?: string,
+  label: string,
+  name: string,
+  placeholder?: string,
+  required?: boolean,
+  type?: string,
 }
 
 const FormikFormGroup = ({
-  type,
-  name,
-  label,
-  help,
   autoCapitalize,
+  help,
+  label,
+  name,
+  placeholder,
+  required,
+  type,
 }: Props) => (
   <FormGroup>
     <Field name={name}>
       {({ field }: FieldProps) => (
-        <>
-          <Label htmlFor={name}>{label}</Label>
-          <InputWrapper>
-            <Input type={type} autoCapitalize={autoCapitalize ? 'on' : 'off'} {...field} />
-            {help && <Help>{help}</Help>}
-          </InputWrapper>
-        </>
+        <InputWrapper>
+          <Input
+            type={type}
+            placeholder={placeholder}
+            label={label}
+            withAsterisk={required}
+            autoCapitalize={autoCapitalize ? 'on' : 'off'}
+            {...field}
+          />
+          {help && <Help>{help}</Help>}
+        </InputWrapper>
       )}
     </Field>
   </FormGroup>
 );
 
 FormikFormGroup.defaultProps = {
-  type: 'text',
-  help: undefined,
   autoCapitalize: false,
+  help: undefined,
+  placeholder: undefined,
+  required: false,
+  type: 'text',
 };
 
 export default FormikFormGroup;

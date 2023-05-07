@@ -23,8 +23,8 @@ type Props = {
 const LoginForm = ({ onSubmit, errorMessage }: Props) => (
   <Formik<LoginFormValues> onSubmit={onSubmit} initialValues={{ username: '', password: '' }}>
     <Form>
-      <FormikFormGroup name="username" label="Nutzername" />
-      <FormikFormGroup name="password" label="Passwort" type="password" />
+      <FormikFormGroup name="username" label="Nutzername" required />
+      <FormikFormGroup name="password" label="Passwort" type="password" required />
 
       {errorMessage && <Alert type="danger">{errorMessage}</Alert>}
 

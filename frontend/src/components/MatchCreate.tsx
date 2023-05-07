@@ -33,8 +33,12 @@ const MatchCreate = () => {
       <H1>Erstelle ein neues Spiel</H1>
       <Formik<MatchFormValues> onSubmit={createMatch} initialValues={{ title: '', password: '' }}>
         <Form>
-          <FormikFormGroup name="title" label="Title" />
-          <FormikFormGroup name="password" label="Passwort" help="Optional kannst du den Zugang zum Spiel mit einem Passwort schützen." />
+          <FormikFormGroup name="title" label="Title" required />
+          <FormikFormGroup
+            name="password"
+            label="Passwort"
+            help="Optional kannst du den Zugang zum Spiel mit einem Passwort schützen."
+          />
 
           <FormActions>
             <Button type="submit">Weiter</Button>
