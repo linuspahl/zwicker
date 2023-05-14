@@ -4,7 +4,7 @@ import {
   Routes,
 } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { Inspector, InspectParams } from 'react-dev-inspector';
 import config from '../config';
@@ -21,6 +21,16 @@ import CurrentUserProvider, { CurrentUserContext } from '../contexts/CurrentUser
 import BackendApiTokenProvider from '../contexts/BackendApiTokenProvider';
 import MenuToggle from './common/MenuToggle';
 import Menu from './common/Menu';
+import WebSocketProvider from '../contexts/WebSocketProvider';
+
+export type Post = {
+  id: number;
+  title: string;
+};
+
+export type PostDetailData = Post & {
+  body: string;
+};
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -70,6 +80,8 @@ const PageLayout = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  overflow: auto;
+  flex-wrap: wrap;
 `;
 
 const Container = styled.div`
@@ -86,37 +98,39 @@ const App = () => {
   return (
     <>
       <BackendApiTokenProvider>
-        <MantineProvider withGlobalStyles withNormalizeCSS>
-          <CurrentUserProvider>
-            <CurrentUserContext.Consumer>
-              {(currentUser) => (
-                <>
-                  <GlobalFonts />
-                  <GlobalStyle />
-                  <Container>
-                    <PageLayout>
-                      {currentUser && (
-                      <>
-                        <MenuToggle onClick={toggleMenu} />
-                        {showMenu && <Menu toggleMenu={toggleMenu} />}
-                        <Router>
-                          <Routes>
-                            <Route path="/" element={<StartPage />} />
-                            <Route path="/matches/create" element={<MatchCreate />} />
-                            <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
-                            <Route path="/matches/table/:matchId" element={<MatchTable />} />
-                          </Routes>
-                        </Router>
-                      </>
-                      )}
-                      {!currentUser && <Login />}
-                    </PageLayout>
-                  </Container>
-                </>
-              )}
-            </CurrentUserContext.Consumer>
-          </CurrentUserProvider>
-        </MantineProvider>
+        <WebSocketProvider url={`ws://${config.apiUrl}`}>
+          <MantineProvider withGlobalStyles withNormalizeCSS>
+            <CurrentUserProvider>
+              <CurrentUserContext.Consumer>
+                {(currentUser) => (
+                  <>
+                    <GlobalFonts />
+                    <GlobalStyle />
+                    <Container>
+                      <PageLayout>
+                        {currentUser && (
+                        <>
+                          <MenuToggle onClick={toggleMenu} />
+                          {showMenu && <Menu toggleMenu={toggleMenu} />}
+                          <Router>
+                            <Routes>
+                              <Route path="/" element={<StartPage />} />
+                              <Route path="/matches/create" element={<MatchCreate />} />
+                              <Route path="/matches/lobby/:matchId" element={<MatchLobby />} />
+                              <Route path="/matches/table/:matchId" element={<MatchTable />} />
+                            </Routes>
+                          </Router>
+                        </>
+                        )}
+                        {!currentUser && <Login />}
+                      </PageLayout>
+                    </Container>
+                  </>
+                )}
+              </CurrentUserContext.Consumer>
+            </CurrentUserProvider>
+          </MantineProvider>
+        </WebSocketProvider>
       </BackendApiTokenProvider>
       {config.isDevelopment && (
         <Inspector

@@ -58,7 +58,7 @@ const Participants = ({ hostUserId, matchUsers }: Props) => {
               <LeftCol>
                 <Number>{index + 1}</Number>
                 <Name>
-                  {userId === currentUser?.id && <Icon name="star" />}{username}
+                  {userId === hostUserId && <Icon name="star" />}{username}
                 </Name>
               </LeftCol>
               {(currentUserIsHost && userId !== hostUserId) && (

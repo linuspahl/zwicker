@@ -19,29 +19,21 @@ const formatMatch = (match) => ({
   status: match.status
 })
 
-const create = async ({ userId, body: { title, password } }, res) => {
+const create = async ({ userId, body: { title, password } }) => {
   const match = await Match.create({
     userId,
     title,
     status: 'lobby',
     hostUserId: userId,
     password: password ? bcrypt.hashSync(password, 8) : null,
-  }).catch(err => {
-    res.status(500).send({ message: err.message });
   });
 
   await match.createMatchUser({ userId, position: 1 })
 
-  return res.send({ message: "Match was created successfully!", match: formatMatch(match) });
+  return { match: formatMatch(match) };
 };
 
-const getAll = (req, res) => {
-  Match.findAll().then(matches => {
-    res.status(200).send(matches.map(formatMatch));
-  }).catch(err => {
-    res.status(500).send({ message: err.message });
-  });
-}
+const getAll = () => Match.findAll().then(matches => matches.map(formatMatch));
 
 const getOne = ({ params: { matchId }}, res) => {
   Match.findByPk(matchId).then(match => {

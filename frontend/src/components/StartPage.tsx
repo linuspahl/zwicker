@@ -5,7 +5,8 @@ import { Alert, Button, PageContainer } from './common';
 import H1 from './common/H1';
 import H2 from './common/H2';
 import MatchesList from './MatchesList';
-import useFetchMatches from '../hooks/useFetchMatches';
+import useFetchData from '../hooks/useFetchData';
+import { Match } from '../types/types';
 
 const Section = styled.div`
   :not(:last-child) {
@@ -33,8 +34,7 @@ const CreateNew = ({ matchesCount }: { matchesCount: number }) => {
 };
 
 const StartPage = () => {
-  const { data: matches } = useFetchMatches();
-
+  const { data: matches } = useFetchData<Array<Match>>('matches');
   const lobbyMatches = matches?.filter(({ status }) => status === 'lobby');
 
   return (

@@ -1,7 +1,9 @@
 import { Form, Formik } from 'formik';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { create as createMatchAction } from '../actions/matches';
+import useActionRequest from '../hooks/useActionRequest';
+import { Match } from '../types/types';
 import {
   Button, FormikFormGroup, H1, PageContainer,
 } from './common';
@@ -19,19 +21,18 @@ const FormActions = styled.div`
 
 const MatchCreate = () => {
   const navigate = useNavigate();
+  const { data: createdMatch, performAction: createMatch } = useActionRequest<Match>('create', 'match');
 
-  const createMatch = ({ title, password }: MatchFormValues) => createMatchAction(
-    title,
-    password,
-  ).then((response) => {
-    const matchId = response.data.match.id;
-    navigate(`/matches/lobby/${matchId}`);
-  });
+  useEffect(() => {
+    if (createdMatch) {
+      navigate(`/matches/lobby/${createdMatch.id}`);
+    }
+  }, [createdMatch, navigate]);
 
   return (
     <PageContainer>
       <H1>Erstelle ein neues Spiel</H1>
-      <Formik<MatchFormValues> onSubmit={createMatch} initialValues={{ title: '', password: '' }}>
+      <Formik<MatchFormValues> onSubmit={({ title, password }: MatchFormValues) => createMatch({ title, password })} initialValues={{ title: '', password: '' }}>
         <Form>
           <FormikFormGroup name="title" label="Title" required />
           <FormikFormGroup

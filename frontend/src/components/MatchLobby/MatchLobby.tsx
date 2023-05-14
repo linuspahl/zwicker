@@ -69,7 +69,7 @@ const MatchLobby = () => {
             <Button onClick={onMatchDelete} variant="default">Spiel löschen</Button>
             <Button onClick={onMatchStart} disabled={disableMatchStart}>Spiel starten</Button>
           </>
-        ) : <Button>Spiel verlassen</Button>}
+        ) : <Button variant="default">Spiel verlassen</Button>}
       </ActionsRow>
       {matchStartError && (
         <MatchStartError type="danger">

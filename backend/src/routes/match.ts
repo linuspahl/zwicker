@@ -14,10 +14,6 @@ const matchRoutes = (app) => {
     [authJwt.verifyToken, controller.create],
   );
   app.get(
-    "/api/matches",
-    [authJwt.verifyToken, controller.getAll],
-  );
-  app.get(
     "/api/matches/:matchId",
     [authJwt.verifyToken, controller.getOne],
   );

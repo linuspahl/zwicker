@@ -49,7 +49,9 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.19.0"
+    "sequelize": "^6.19.0",
+    "uuidv4": "^6.2.13",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.5",

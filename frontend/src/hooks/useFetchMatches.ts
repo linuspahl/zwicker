@@ -9,7 +9,7 @@ const useFetchMatches = (): { data: Array<Match> | undefined, isFetching: boolea
   const { data, isFetching } = useQuery({
     queryKey: ['matches', 'list'],
     queryFn: fetchMatches,
-    refetchInterval: 2000,
+    refetchOnWindowFocus: false,
   });
   return { data, isFetching };
 };
