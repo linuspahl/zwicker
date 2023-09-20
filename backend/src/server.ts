@@ -7,6 +7,7 @@ import userRoutes from './routes/user';
 import matchRoutes from './routes/match';
 import ws, { WebSocket } from 'ws';
 import matchController from './controllers/match';
+import matchModelActions from './modelActions/match'
 import { uuid } from "uuidv4";
 
 const DEFAULT_PORT = 8080;
@@ -15,9 +16,7 @@ const PORT = process.env.PORT || DEFAULT_PORT;
 const app = express();
 
 const clients = {}
-const rooms = {
-  matches: new Set(),
-};
+const rooms: { [roomName: string]: Set<WebSocket> | undefined} = {};
 
 const wsServer = new ws.Server({ noServer: true });
 
@@ -36,6 +35,7 @@ const updateClientsInRoom = (roomName: string, type: string, dataType: string, p
     if (client.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify({
         type,
+        roomName,
         dataType,
         payload
       }));
@@ -55,14 +55,9 @@ const sendResonseToClient = (clientId: string, type: string, dataType: string, e
 
 }
 
-const joinRoom = (ws: WebSocket, dataType: string) => {
-  const room = rooms[dataType];
-
-  if (!room) {
-    throw new Error(`Invalid room ${dataType}`);
-  }
-  room.add(ws);
-}
+const joinRoom = (ws: WebSocket, dataType: string) => (
+  (rooms[dataType] ??= new Set()).add(ws)
+)
 
 wsServer.on('connection', (ws) => {
   console.log('Client connected');
@@ -80,19 +75,32 @@ wsServer.on('connection', (ws) => {
         break;
       case 'fetch_data':
         if (data.dataType === 'matches') {
-          const matches = await matchController.getAll()
+          const matches = await matchModelActions.getAll()
           updateClientsInRoom('matches', 'update_client', 'matches', matches)
         }
-        break;
-      case 'create':
         if (data.dataType === 'match') {
-          const match = await matchController.create({ userId: 1, body: data.payload })
-          const matches = await matchController.getAll()
-
-          sendResonseToClient(clientId, 'created', 'match', null, match)
-          updateClientsInRoom('matches', 'update_client', 'matches', matches)
+          const match = await matchController.getOne(data.entityId);
+          updateClientsInRoom(`match_${data.entityId}`, 'update_client', 'match', match)
+        }
+        if (data.dataType === 'match_users') {
+          const matchUsers = await matchController.getUsers(data.entityId);
+          updateClientsInRoom(`match_users_${data.entityId}`, 'update_client', 'match_users', matchUsers)
+        }
+        if (data.dataType === 'match_state') {
+          const matchState = await matchController.getState(data.entityId);
+          updateClientsInRoom(`match_state_${data.entityId}`, 'update_client', 'match_state', matchState)
         }
         break;
+      case 'update':
+        if (data.dataType === 'match') {
+          const match = await matchController.start(data.payload);
+          updateClientsInRoom(`match_${data.payload}`, 'update_client', 'match', match)
+        }
+        if (data.dataType === 'match_move') {
+          const match = await matchController.move(data.payload);
+          updateClientsInRoom(`match_${data.payload}`, 'update_client', 'match', match)
+        }
+        break
       default:
         throw new Error('Invalid type ${data.type}');
     }
@@ -114,7 +122,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // register routes
 authRoute(app);
 userRoutes(app);
-matchRoutes(app);
+matchRoutes(app, updateClientsInRoom);
 
 const server = app.listen(PORT);
 server.on('upgrade', (request, socket, head) => {

@@ -1,6 +1,8 @@
 import db from '../models';
-import bcrypt from 'bcryptjs';
 import cardSet from '../card-set'
+import modelActions from '../modelActions/match'
+import clients from '../clients/match'
+import utils from '../utils/match'
 
 const Match = db.match;
 const MatchState = db.matchState;
@@ -12,44 +14,28 @@ const getMultipleRandom = (arr, num) => {
   return shuffled.slice(0, num);
 }
 
-const formatMatch = (match) => ({
-  id: match.id,
-  title: match.title,
-  hasPassword: !!match.password,
-  status: match.status
-})
-
-const create = async ({ userId, body: { title, password } }) => {
-  const match = await Match.create({
-    userId,
-    title,
-    status: 'lobby',
-    hostUserId: userId,
-    password: password ? bcrypt.hashSync(password, 8) : null,
+const create = async ({ userId, body: { title, password } }, res) => {
+  const match = await modelActions.create({ userId, title, password }).catch(err => {
+    res.status(500).send({ message: err.message });
   });
 
   await match.createMatchUser({ userId, position: 1 })
+  await clients.syncMatches(res.locals.updateClientsInRoom);
 
-  return { match: formatMatch(match) };
+  res.send({ message: "Match was created successfully!", match: utils.formatMatchForResponse(match) });
 };
 
-const getAll = () => Match.findAll().then(matches => matches.map(formatMatch));
+const getOne = (matchId: string) => Match.findByPk(matchId)
 
-const getOne = ({ params: { matchId }}, res) => {
-  Match.findByPk(matchId).then(match => {
-    res.status(200).send(match);
-  }).catch(err => {
-    res.status(500).send({ message: err.message });
-  });
-}
-
-const getUsers = async ({ params: { matchId }}, res) => {
+const getUsers = async (matchId) => {
   const match = await Match.findByPk(matchId).catch(err => {
-    res.status(500).send({ message: err.message });
+    // res.status(500).send({ message: err.message });
+    // todod: handle error
   });
 
   if (!match) {
-    return res.status(404).send({ message: "Match not found" });
+    // todod: handle error
+    // return res.status(404).send({ message: "Match not found" });
   }
 
   return match.getMatchUsers({
@@ -57,14 +43,10 @@ const getUsers = async ({ params: { matchId }}, res) => {
       model: db.user,
       attributes: [ 'username' ]
     },
-  }).then((matchUsers) => {
-    res.status(200).send(matchUsers)
-  }).catch(err => {
-    res.status(500).send({ message: err.message });
-  });
+  })
 }
 
-const getState = async ({ params: { matchId }}, res) => {
+const getState = async (matchId: string) => {
   return MatchState.findOne({
     include: { 
       model: db.matchStateUser,
@@ -72,28 +54,23 @@ const getState = async ({ params: { matchId }}, res) => {
     where: {
       matchId
     }
-  }).then((matchState) => {
-    return res.status(200).send(matchState);    
-  }).catch(err => {
-    res.status(500).send({ message: err.message });
   });
-
 }
 
-const start = async ({ params: { matchId } }, res) => {
+const start = async (matchId: string) => {
   let unplayedCards = Object.keys(cardSet);
   
   const match = await Match.findByPk(matchId).catch(err => {
-    res.status(500).send({ message: err.message });
+    // res.status(500).send({ message: err.message });
   });
   
   if (match.status !== 'lobby') {
-    return res.status(400).send({ message: `Match can not start because its status is not "lobby", but "${match.status}"` });
+    // return res.status(400).send({ message: `Match can not start because its status is not "lobby", but "${match.status}"` });
   }
   const matchUsers = await match.getMatchUsers();
 
   if (matchUsers?.length <= 1) {
-    return res.status(400).send({ message: `Match can not start because it needs more than one match user.` });
+    // return res.status(400).send({ message: `Match can not start because it needs more than one match user.` });
   }
 
   const matchUserCards = matchUsers.map(() => {
@@ -124,7 +101,7 @@ const start = async ({ params: { matchId } }, res) => {
 
   await match.save();
   
-  return res.status(200).send(match);
+  return match;
 }
 
 const join = async ({ userId, params: { matchId } }, res) => {
@@ -269,7 +246,6 @@ const deleteOne = async ({ userId, params: { matchId } }, res) => {
 export default {
   start,
   create,
-  getAll,
   getOne,
   deleteOne,
   join,
@@ -277,3 +253,4 @@ export default {
   getUsers,
   getState,
 }
+

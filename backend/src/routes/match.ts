@@ -1,7 +1,15 @@
 import { authJwt } from "../middleware";
 import controller from "../controllers/match";
+import clients from "../clients/match";
 
-const matchRoutes = (app) => {
+const test = (updateClientsInRoom) => (req, res, next) => {
+  
+  res.locals.updateClientsInRoom = updateClientsInRoom;
+
+  next();
+};
+
+const matchRoutes = (app, updateClientsInRoom) => {
   app.use(function(req, res, next) {
     res.header(
       "Access-Control-Allow-Headers",
@@ -11,27 +19,15 @@ const matchRoutes = (app) => {
   });
   app.post(
     "/api/matches/create",
-    [authJwt.verifyToken, controller.create],
-  );
-  app.get(
-    "/api/matches/:matchId",
-    [authJwt.verifyToken, controller.getOne],
+    [authJwt.verifyToken, test(updateClientsInRoom), controller.create],
   );
   app.delete(
     "/api/matches/:matchId/delete",
     [authJwt.verifyToken, controller.deleteOne],
   );
-  app.put(
-    "/api/matches/:matchId/start",
-    [authJwt.verifyToken, controller.start],
-  );
   app.post(
     "/api/matches/:matchId/join",
     [authJwt.verifyToken, controller.join],
-  );
-  app.get(
-    "/api/matches/:matchId/users",
-    [authJwt.verifyToken, controller.getUsers],
   );
   app.get(
     "/api/matches/:matchId/state",

@@ -1,14 +1,13 @@
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import useFetchMatch from '../../hooks/useFetchMatch';
 import MatchUsers from './MatchUsers';
 import MatchBoard from './MatchBoard';
 import UserMatchCards from './UserMatchCards';
-import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
 import useFetchMatchState from '../../hooks/useFetchMatchState';
 import useCurrentUser from '../../hooks/useCurrentUser';
 import CurrentMoveProvider from '../../contexts/CurrentMoveProvider';
-import { MatchState } from '../../types/types';
+import { Match, MatchState, MatchUser } from '../../types/types';
+import useFetchData from '../../hooks/useFetchData';
 
 const Containter = styled.div`
   width: 100vw;
@@ -19,7 +18,7 @@ const Containter = styled.div`
   justify-content: space-between;
 `;
 
-const MatchTable = ({ matchState }: { matchState: MatchState | undefined }) => {
+const MatchTable = ({ matchState }: { matchState: MatchState | null }) => {
   const { matchId } = useParams();
   const currentUser = useCurrentUser();
 
@@ -27,8 +26,17 @@ const MatchTable = ({ matchState }: { matchState: MatchState | undefined }) => {
     throw Error('Missing matchId.');
   }
 
-  const { data: matchUsers } = useFetchMatchUsers(matchId);
-  const { data: match } = useFetchMatch(matchId);
+  const { data: match } = useFetchData<Match>({
+    room: `match_${matchId}`,
+    dataType: 'match',
+    entityId: matchId,
+  });
+
+  const { data: matchUsers } = useFetchData<Array<MatchUser>>({
+    room: `match_users_${matchId}`,
+    dataType: 'match_users',
+    entityId: matchId,
+  });
 
   if (!match || !matchUsers || !matchState || !currentUser) {
     return <div>spinner</div>;
@@ -43,7 +51,10 @@ const MatchTable = ({ matchState }: { matchState: MatchState | undefined }) => {
 
   return (
     <Containter>
-      <MatchUsers matchUsers={matchUsers} currentMoveUserId={matchState.currentMoveUserId} />
+      <MatchUsers
+        matchUsers={matchUsers}
+        currentMoveUserId={matchState.currentMoveUserId}
+      />
       <MatchBoard
         matchId={match.id}
         cardStacks={matchState.boardCards}
@@ -63,7 +74,11 @@ const MatchTableWrapper = () => {
   if (!matchId) {
     throw Error('Missing matchId.');
   }
-  const { data: matchState } = useFetchMatchState(matchId);
+  const { data: matchState } = useFetchData<MatchState>({
+    room: `match_state_${matchId}`,
+    dataType: 'match_state',
+    entityId: matchId,
+  });
 
   return (
     <CurrentMoveProvider currentMoveUserId={matchState?.currentMoveUserId}>

@@ -50,13 +50,12 @@ const MoveOptions = ({ matchId }: { matchId: number }) => {
 
     if (type === 'dropping') {
       if (currentMove?.sourceCardId) {
+        setCurrentMove(undefined);
         return submitMove({
           matchId,
           type,
           sourceCardId: currentMove.sourceCardId,
           targetCardId: currentMove?.targetCardId,
-        }).then(() => {
-          setCurrentMove(undefined);
         });
       }
     }
@@ -157,9 +156,9 @@ const UserMatchCards = ({ cards, isCurrentMove, matchId }: Props) => {
         <CardsList hasFocus={isCurrentMove && !currentMove?.sourceCardId}>
           {cards.map((({ cardId }) => {
             const cardIsSelected = isCurrentMove
-          && currentMove?.sourceCardId === cardId
-          && (currentMove?.type === 'picking' || currentMove?.type === 'building')
-          && currentMove?.sourceCardValue !== undefined;
+              && currentMove?.sourceCardId === cardId
+              && (currentMove?.type === 'picking' || currentMove?.type === 'building')
+              && currentMove?.sourceCardValue !== undefined;
 
             const overlay = cardOverlay(isCurrentMove, currentMove, matchId, String(cardId));
 

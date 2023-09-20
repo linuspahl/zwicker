@@ -9,7 +9,6 @@ const useWebSocket = () => {
   }
 
   const send = useCallback((data: unknown) => {
-    console.log('send', data);
     ws.send(JSON.stringify(data));
   }, [ws]);
 

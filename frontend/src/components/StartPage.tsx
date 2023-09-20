@@ -34,7 +34,7 @@ const CreateNew = ({ matchesCount }: { matchesCount: number }) => {
 };
 
 const StartPage = () => {
-  const { data: matches } = useFetchData<Array<Match>>('matches');
+  const { data: matches } = useFetchData<Array<Match>>({ room: 'matches', dataType: 'matches' });
   const lobbyMatches = matches?.filter(({ status }) => status === 'lobby');
 
   return (

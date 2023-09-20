@@ -4,6 +4,7 @@ import useWebSocket from './useWebSocket';
 const actionMap = {
   create: 'created',
   update: 'updated',
+  start: 'started',
 };
 
 const useActionRequest = <Entity>(type: 'create' | 'update', dataType: string) => {

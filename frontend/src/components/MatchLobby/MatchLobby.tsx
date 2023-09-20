@@ -5,11 +5,11 @@ import {
   Alert, Button, H1, PageContainer,
 } from '../common';
 import Participants from './Participants';
-import useFetchMatch from '../../hooks/useFetchMatch';
 import useDeleteMatch from '../../hooks/useDeleteMatch';
-import useStartMatch from '../../hooks/useStartMatch';
 import useCurrentUser from '../../hooks/useCurrentUser';
-import useFetchMatchUsers from '../../hooks/useFetchMatchUsers';
+import useFetchData from '../../hooks/useFetchData';
+import { Match, MatchUser } from '../../types/types';
+import useActionRequest from '../../hooks/useActionRequest';
 
 const Container = styled.div`
   
@@ -30,14 +30,15 @@ const MatchLobby = () => {
   const user = useCurrentUser();
   const { matchId } = useParams();
   const { deleteMatch } = useDeleteMatch();
-  const { startMatch, error: matchStartError } = useStartMatch();
+  const { performAction: startMatch, error: matchStartError } = useActionRequest<void>('update', 'match');
 
   if (!matchId) {
     throw Error('Missing matchId.');
   }
 
-  const { data: match } = useFetchMatch(matchId, { refetchInterval: 3000 });
-  const { data: matchUsers } = useFetchMatchUsers(matchId, { refetchInterval: 3000 });
+  const { data: match } = useFetchData<Match>({ room: `match_${matchId}`, dataType: 'match', entityId: matchId });
+  const { data: matchUsers } = useFetchData<Array<MatchUser>>({ room: `match_users_${matchId}`, dataType: 'match_users', entityId: matchId });
+
   const disableMatchStart = matchUsers ? matchUsers.length <= 1 : false;
   const onMatchDelete = useCallback(() => deleteMatch(matchId), [deleteMatch, matchId]);
   const onMatchStart = useCallback(() => startMatch(matchId), [startMatch, matchId]);
@@ -73,7 +74,7 @@ const MatchLobby = () => {
       </ActionsRow>
       {matchStartError && (
         <MatchStartError type="danger">
-          {matchStartError}
+          {JSON.stringify(matchStartError)}
         </MatchStartError>
       )}
     </PageContainer>
