@@ -92,10 +92,6 @@ wsServer.on('connection', (ws) => {
         }
         break;
       case 'update':
-        if (data.dataType === 'match') {
-          const match = await matchController.start(data.payload);
-          updateClientsInRoom(`match_${data.payload}`, 'update_client', 'match', match)
-        }
         if (data.dataType === 'match_move') {
           const match = await matchController.move(data.payload);
           updateClientsInRoom(`match_${data.payload}`, 'update_client', 'match', match)

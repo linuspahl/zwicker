@@ -2,9 +2,9 @@ import { authJwt } from "../middleware";
 import controller from "../controllers/match";
 import clients from "../clients/match";
 
-const test = (updateClientsInRoom) => (req, res, next) => {
+const extendReqLocals = (fnKey: string, fn) => (req, res, next) => {
   
-  res.locals.updateClientsInRoom = updateClientsInRoom;
+  res.locals[fnKey] = fn;
 
   next();
 };
@@ -19,7 +19,7 @@ const matchRoutes = (app, updateClientsInRoom) => {
   });
   app.post(
     "/api/matches/create",
-    [authJwt.verifyToken, test(updateClientsInRoom), controller.create],
+    [authJwt.verifyToken, extendReqLocals('updateClientsInRoom', updateClientsInRoom), controller.create],
   );
   app.delete(
     "/api/matches/:matchId/delete",
@@ -28,6 +28,10 @@ const matchRoutes = (app, updateClientsInRoom) => {
   app.post(
     "/api/matches/:matchId/join",
     [authJwt.verifyToken, controller.join],
+  );
+  app.put(
+    "/api/matches/:matchId/start",
+    [authJwt.verifyToken, extendReqLocals('updateClientsInRoom', updateClientsInRoom), controller.start],
   );
   app.get(
     "/api/matches/:matchId/state",

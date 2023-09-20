@@ -57,20 +57,20 @@ const getState = async (matchId: string) => {
   });
 }
 
-const start = async (matchId: string) => {
+const start = async ({ params: { matchId } }, res, req) => {
   let unplayedCards = Object.keys(cardSet);
   
   const match = await Match.findByPk(matchId).catch(err => {
-    // res.status(500).send({ message: err.message });
+    res.status(500).send({ message: err.message });
   });
   
   if (match.status !== 'lobby') {
-    // return res.status(400).send({ message: `Match can not start because its status is not "lobby", but "${match.status}"` });
+    return res.status(400).send({ message: `Match can not start because its status is not "lobby", but "${match.status}"` });
   }
   const matchUsers = await match.getMatchUsers();
 
   if (matchUsers?.length <= 1) {
-    // return res.status(400).send({ message: `Match can not start because it needs more than one match user.` });
+    return res.status(400).send({ message: `Match can not start because it needs more than one match user.` });
   }
 
   const matchUserCards = matchUsers.map(() => {
@@ -100,8 +100,9 @@ const start = async (matchId: string) => {
   match.status = 'running';
 
   await match.save();
-  
-  return match;
+  await clients.syncMatch(match, res.locals.updateClientsInRoom);
+
+  return res.status(200).send(match);
 }
 
 const join = async ({ userId, params: { matchId } }, res) => {

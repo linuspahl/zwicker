@@ -10,6 +10,7 @@ import useCurrentUser from '../../hooks/useCurrentUser';
 import useFetchData from '../../hooks/useFetchData';
 import { Match, MatchUser } from '../../types/types';
 import useActionRequest from '../../hooks/useActionRequest';
+import useStartMatch from '../../hooks/useStartMatch';
 
 const Container = styled.div`
   
@@ -30,7 +31,7 @@ const MatchLobby = () => {
   const user = useCurrentUser();
   const { matchId } = useParams();
   const { deleteMatch } = useDeleteMatch();
-  const { performAction: startMatch, error: matchStartError } = useActionRequest<void>('update', 'match');
+  const { startMatch, error: matchStartError } = useStartMatch();
 
   if (!matchId) {
     throw Error('Missing matchId.');
@@ -67,8 +68,12 @@ const MatchLobby = () => {
       <ActionsRow>
         {currentUserIsHost ? (
           <>
-            <Button onClick={onMatchDelete} variant="default">Spiel löschen</Button>
-            <Button onClick={onMatchStart} disabled={disableMatchStart}>Spiel starten</Button>
+            <Button onClick={onMatchDelete} variant="default">
+              Spiel löschen
+            </Button>
+            <Button onClick={onMatchStart} disabled={disableMatchStart}>
+              Spiel starten
+            </Button>
           </>
         ) : <Button variant="default">Spiel verlassen</Button>}
       </ActionsRow>
