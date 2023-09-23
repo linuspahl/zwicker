@@ -25,7 +25,7 @@ const corsOptions = {
   origin: process.env.FRONTEND_URL
 };
 
-const updateClientsInRoom = (roomName: string, type: string, dataType: string, payload: unknown) => {
+const updateClientsInRoom = (roomName: string, dataType: string, payload: unknown) => {
   const room = rooms[roomName];
 
   if (!room) {
@@ -35,7 +35,7 @@ const updateClientsInRoom = (roomName: string, type: string, dataType: string, p
   room.forEach((client: WebSocket) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify({
-        type,
+        type: 'update_client',
         roomName,
         dataType,
         payload
@@ -77,16 +77,16 @@ wsServer.on('connection', (ws) => {
         break;
       case 'fetch_data':
         if (data.dataType === 'matches') {
-          matchClients.syncMatches(updateClientsInRoom);
+          await matchClients.syncMatches(updateClientsInRoom);
         }
         if (data.dataType === 'match') {
-          matchClients.syncMatch(data.entityId, updateClientsInRoom);
+          await matchClients.syncMatch(data.entityId, updateClientsInRoom);
         }
         if (data.dataType === 'match_users') {
-          matchClients.syncMatchUsers(data.entityId, updateClientsInRoom);
+          await matchClients.syncMatchUsers(data.entityId, updateClientsInRoom);
         }
         if (data.dataType === 'match_state') {
-          matchClients.syncMatchState(data.entityId, updateClientsInRoom);
+          await matchClients.syncMatchState(data.entityId, updateClientsInRoom);
         }
         break;
 

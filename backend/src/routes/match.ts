@@ -1,6 +1,6 @@
 import { authJwt } from "../middleware";
 import controller from "../controllers/match";
-import clients from "../clients/match";
+import modelActions from '../modelActions/match'
 
 const extendReqLocals = (fnKey: string, fn) => (req, res, next) => {
   
@@ -35,7 +35,7 @@ const matchRoutes = (app, updateClientsInRoom) => {
   );
   app.get(
     "/api/matches/:matchId/state",
-    [authJwt.verifyToken, controller.getState],
+    [authJwt.verifyToken, modelActions.getState],
   );
   app.post(
     "/api/matches/:matchId/move",

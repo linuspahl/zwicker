@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 
 const Match = db.match;
 const MatchState = db.matchState;
+const MatchStateUser = db.MatchStateUser
 
 const create =  async ({
   userId,
@@ -20,11 +21,14 @@ const create =  async ({
   password: password ? bcrypt.hashSync(password, 8) : null,
 });
 
+const createMatchState = (matchState) =>  MatchState.create(matchState)
+const createMatchStateUser = (matchStateUser) => MatchStateUser.create(matchStateUser)
+
 const getMatch = (matchId: string) => Match.findByPk(matchId);
 
 const getAll = () => Match.findAll();
 
-const getState = async (matchId: string) => MatchState.findOne({
+const getState = (matchId: string) => MatchState.findOne({
   include: { 
     model: db.matchStateUser,
   },
@@ -36,10 +40,6 @@ const getState = async (matchId: string) => MatchState.findOne({
 const getUsers = async (matchId) => {
   const match = await Match.findByPk(matchId)
 
-  if (!match) {
-    // Todo: handle error
-  }
-
   return match.getMatchUsers({
     include: { 
       model: db.user,
@@ -50,8 +50,10 @@ const getUsers = async (matchId) => {
 
 export default {
   create,
+  createMatchState,
+  createMatchStateUser,
   getMatch,
   getAll,
   getUsers,
-  getState
+  getState,
 }

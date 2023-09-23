@@ -5,8 +5,8 @@ import clients from '../clients/match'
 import utils from '../utils/match'
 
 const Match = db.match;
-const MatchState = db.matchState;
-const MatchStateUser = db.matchStateUser;
+
+const sendStatus = (res, status, message: string) => res.status(status).send({ message });
 
 const getMultipleRandom = (arr, num) => {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
@@ -15,9 +15,7 @@ const getMultipleRandom = (arr, num) => {
 }
 
 const create = async ({ userId, body: { title, password } }, res) => {
-  const match = await modelActions.create({ userId, title, password }).catch(err => {
-    res.status(500).send({ message: err.message });
-  });
+  const match = await modelActions.create({ userId, title, password });
 
   await match.createMatchUser({ userId, position: 1 })
   await clients.syncMatches(res.locals.updateClientsInRoom);
@@ -25,31 +23,18 @@ const create = async ({ userId, body: { title, password } }, res) => {
   res.send({ message: "Match was created successfully!", match: utils.formatMatchForResponse(match) });
 };
 
-const getState = async (matchId: string) => {
-  return MatchState.findOne({
-    include: { 
-      model: db.matchStateUser,
-    },
-    where: {
-      matchId
-    }
-  });
-}
-
-const start = async ({ params: { matchId } }, res, req) => {
+const start = async ({ params: { matchId } }, res) => {
   let unplayedCards = Object.keys(cardSet);
   
-  const match = await Match.findByPk(matchId).catch(err => {
-    res.status(500).send({ message: err.message });
-  });
+  const match = await modelActions.getMatch(matchId);
   
   if (match.status !== 'lobby') {
-    return res.status(400).send({ message: `Match can not start because its status is not "lobby", but "${match.status}"` });
+    return sendStatus(res, 400, `Match can not start because its status is not "lobby", but "${match.status}"`)
   }
   const matchUsers = await match.getMatchUsers();
 
   if (matchUsers?.length <= 1) {
-    return res.status(400).send({ message: `Match can not start because it needs more than one match user.` });
+    return sendStatus(res, 400, `Match can not start because it needs more than one match user.`)
   }
 
   const matchUserCards = matchUsers.map(() => {
@@ -61,7 +46,7 @@ const start = async ({ params: { matchId } }, res, req) => {
   const boardCards = getMultipleRandom(unplayedCards, 4).map((cardId) => ([{ cardId, value: undefined }]));
   unplayedCards = unplayedCards.filter(item => !boardCards.find((cardStack) => cardStack.find(({cardId}) => cardId === item)));
 
-  const matchState = await MatchState.create({
+  const matchState = await modelActions.createMatchState({
     matchId: match.id,
     currentMoveUserId: matchUsers[0].userId,
     unplayedCards,
@@ -69,11 +54,11 @@ const start = async ({ params: { matchId } }, res, req) => {
   });
 
   for (const [index, matchUser] of matchUsers.entries()) {
-    await MatchStateUser.create({
+    await modelActions.createMatchStateUser({
       matchStateId: matchState.id,
       userId: matchUser.userId,
       cards: matchUserCards[index],
-    })
+    });
   }
 
   match.status = 'running';
@@ -85,12 +70,10 @@ const start = async ({ params: { matchId } }, res, req) => {
 }
 
 const join = async ({ userId, params: { matchId } }, res) => {
-  const match = await Match.findByPk(matchId).catch(err => {
-    res.status(500).send({ message: err.message });
-  });
+  const match = await Match.findByPk(matchId)
   
   if (match.status !== 'lobby') {
-    return res.status(400).send({ message: `Match can not be joined because its status is not "lobby", but "${match.status}"` });  
+    return sendStatus(res, 400, `Match can not be joined because its status is not "lobby", but "${match.status}"`);
   }
 
   const matchUsers = await match.getMatchUsers();
@@ -110,18 +93,11 @@ const move = async ({
     targetCardId,
     targetCardValue
   }},
-  res,
-  req
+  res
 ) => {
-  const match = await Match.findByPk(matchId);
+  const match = await modelActions.getMatch(matchId);
   const matchState = await modelActions.getState(matchId);
-
-  const matchUsers = await match.getMatchUsers({
-    include: { 
-     model: db.user,
-     attributes: [ 'username' ]
-   },
- })
+  const matchUsers = await modelActions.getUsers(matchId)
   const matchUserIndex = matchUsers.findIndex(({ userId: matchUserId }) => matchUserId === userId)
   const matchStateUsers = await matchState.getMatchStateUsers()
   const matchStateUser = matchStateUsers.find(({ userId: matchStateUserId }) => matchStateUserId === userId)
@@ -215,12 +191,10 @@ const move = async ({
 }
 
 const deleteOne = async ({ userId, params: { matchId } }, res) => {
-  const match = await Match.findByPk(matchId).catch(err => {
-    res.status(500).send({ message: err.message });
-  });
+  const match = await modelActions.getMatch(matchId);
   
   if (match.userId !== userId) {
-    return res.status(400).send({ message: 'Match can not be deleted because you are not the host' });  
+    return sendStatus(res, 400, 'Match can not be deleted because you are not the host')
   }
 
   match.destroy();
@@ -234,6 +208,5 @@ export default {
   deleteOne,
   join,
   move,
-  getState,
 }
 

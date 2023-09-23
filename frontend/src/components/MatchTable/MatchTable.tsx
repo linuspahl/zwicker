@@ -38,6 +38,9 @@ const MatchTable = ({ matchState }: { matchState: MatchState | null }) => {
     entityId: matchId,
   });
 
+  console.log({
+    match, matchUsers, matchState, currentUser,
+  });
   if (!match || !matchUsers || !matchState || !currentUser) {
     return <div>spinner</div>;
   }
