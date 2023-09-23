@@ -8,6 +8,7 @@ import matchRoutes from './routes/match';
 import ws, { WebSocket } from 'ws';
 import matchController from './controllers/match';
 import matchModelActions from './modelActions/match'
+import matchClients from './clients/match'
 import { uuid } from "uuidv4";
 
 const DEFAULT_PORT = 8080;
@@ -71,32 +72,24 @@ wsServer.on('connection', (ws) => {
 
     switch (data.type) {
       case 'join_room':
+        console.log('join room', data.dataType)
         joinRoom(ws, data.dataType)
         break;
       case 'fetch_data':
         if (data.dataType === 'matches') {
-          const matches = await matchModelActions.getAll()
-          updateClientsInRoom('matches', 'update_client', 'matches', matches)
+          matchClients.syncMatches(updateClientsInRoom);
         }
         if (data.dataType === 'match') {
-          const match = await matchController.getOne(data.entityId);
-          updateClientsInRoom(`match_${data.entityId}`, 'update_client', 'match', match)
+          matchClients.syncMatch(data.entityId, updateClientsInRoom);
         }
         if (data.dataType === 'match_users') {
-          const matchUsers = await matchController.getUsers(data.entityId);
-          updateClientsInRoom(`match_users_${data.entityId}`, 'update_client', 'match_users', matchUsers)
+          matchClients.syncMatchUsers(data.entityId, updateClientsInRoom);
         }
         if (data.dataType === 'match_state') {
-          const matchState = await matchController.getState(data.entityId);
-          updateClientsInRoom(`match_state_${data.entityId}`, 'update_client', 'match_state', matchState)
+          matchClients.syncMatchState(data.entityId, updateClientsInRoom);
         }
         break;
-      case 'update':
-        if (data.dataType === 'match_move') {
-          const match = await matchController.move(data.payload);
-          updateClientsInRoom(`match_${data.payload}`, 'update_client', 'match', match)
-        }
-        break
+
       default:
         throw new Error('Invalid type ${data.type}');
     }

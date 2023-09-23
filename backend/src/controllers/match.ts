@@ -25,27 +25,6 @@ const create = async ({ userId, body: { title, password } }, res) => {
   res.send({ message: "Match was created successfully!", match: utils.formatMatchForResponse(match) });
 };
 
-const getOne = (matchId: string) => Match.findByPk(matchId)
-
-const getUsers = async (matchId) => {
-  const match = await Match.findByPk(matchId).catch(err => {
-    // res.status(500).send({ message: err.message });
-    // todod: handle error
-  });
-
-  if (!match) {
-    // todod: handle error
-    // return res.status(404).send({ message: "Match not found" });
-  }
-
-  return match.getMatchUsers({
-    include: { 
-      model: db.user,
-      attributes: [ 'username' ]
-    },
-  })
-}
-
 const getState = async (matchId: string) => {
   return MatchState.findOne({
     include: { 
@@ -100,7 +79,7 @@ const start = async ({ params: { matchId } }, res, req) => {
   match.status = 'running';
 
   await match.save();
-  await clients.syncMatch(match, res.locals.updateClientsInRoom);
+  await clients.syncMatch(match.id, res.locals.updateClientsInRoom);
 
   return res.status(200).send(match);
 }
@@ -121,26 +100,28 @@ const join = async ({ userId, params: { matchId } }, res) => {
   return res.status(200).send(match);
 }
 
-const move = async ({ userId, body: {
-  matchId,
-  type,
-  sourceCardId,
-  sourceCardValue,
-  targetCardId,
-  targetCardValue
-}}, res) => {
-  const match = await Match.findByPk(matchId).catch();
-  
-  const matchState = await MatchState.findOne({
-    include: { 
-      model: db.matchStateUser,
-    },
-    where: {
-      matchId
-    }
-  })
+const move = async ({
+  userId,
+  body: {
+    matchId,
+    type,
+    sourceCardId,
+    sourceCardValue,
+    targetCardId,
+    targetCardValue
+  }},
+  res,
+  req
+) => {
+  const match = await Match.findByPk(matchId);
+  const matchState = await modelActions.getState(matchId);
 
-  const matchUsers = await match.getMatchUsers()
+  const matchUsers = await match.getMatchUsers({
+    include: { 
+     model: db.user,
+     attributes: [ 'username' ]
+   },
+ })
   const matchUserIndex = matchUsers.findIndex(({ userId: matchUserId }) => matchUserId === userId)
   const matchStateUsers = await matchState.getMatchStateUsers()
   const matchStateUser = matchStateUsers.find(({ userId: matchStateUserId }) => matchStateUserId === userId)
@@ -175,7 +156,6 @@ const move = async ({ userId, body: {
       let unplayedCards = matchState.unplayedCards;
       const newBoardCards = getMultipleRandom(unplayedCards, 4).map((cardId) => ([{ cardId, value: undefined }]));
       unplayedCards = unplayedCards.filter(item => !newBoardCards.find((cardStack) => cardStack.find(({cardId}) => cardId === item)));
-      console.log({newBoardCards, unplayedCards})
       matchState.boardCards = newBoardCards;
       matchState.unplayedCards = unplayedCards;
     }
@@ -184,7 +164,6 @@ const move = async ({ userId, body: {
   if (type === 'building') {
     const updatedBoardCards = matchState.boardCards.map((cardStack) => {
       const targetCardIndex = cardStack.findIndex(({ cardId }) => cardId === targetCardId);
-      console.log({targetCardIndex, cardStack, targetCardId});
       if (targetCardIndex >= 0) {
         const targetCard = cardStack[targetCardIndex];
         const newTargetCard = { cardId: targetCard.cardId, value: !targetCard.value ? targetCardValue : targetCard.value };
@@ -224,8 +203,13 @@ const move = async ({ userId, body: {
   }
 
   matchState.currentMoveUserId = nextMatchUser.userId;
+
   await matchStateUser.save();
   await matchState.save();
+
+  await clients.syncMatch(match.id, res.locals.updateClientsInRoom);
+  await clients.syncMatchState(match.id, res.locals.updateClientsInRoom);
+  await clients.syncMatchUsers(match.id, res.locals.updateClientsInRoom);
 
   return res.status(200).send();
 }
@@ -247,11 +231,9 @@ const deleteOne = async ({ userId, params: { matchId } }, res) => {
 export default {
   start,
   create,
-  getOne,
   deleteOne,
   join,
   move,
-  getUsers,
   getState,
 }
 

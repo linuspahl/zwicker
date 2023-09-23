@@ -39,7 +39,7 @@ const matchRoutes = (app, updateClientsInRoom) => {
   );
   app.post(
     "/api/matches/:matchId/move",
-    [authJwt.verifyToken, controller.move],
+    [authJwt.verifyToken, extendReqLocals('updateClientsInRoom', updateClientsInRoom), controller.move],
   );
 };
 
